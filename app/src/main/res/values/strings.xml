@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Cerberus</string>
+    <string name="facebook_app_id">1094276797673988</string>
+    <string name="fb_login_protocol_scheme">fb1094276797673988</string>
 </resources>
