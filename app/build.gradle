@@ -21,6 +21,15 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'TwitterApiKey', TWITTER_API_KEY
+        it.buildConfigField 'String', 'TwitterApiKeySecret', TWITTER_API_KEY_SECRET
+        it.buildConfigField 'String', 'TwitterAccessToken', TWITTER_ACCESS_TOKEN
+        it.buildConfigField 'String', 'TwitterAccessTokenSecret', TWITTER_ACCESS_TOKEN_SECRET
+
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -28,11 +37,11 @@ android {
 }
 
 dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
 
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.facebook.android:facebook-login:[8.1)'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
