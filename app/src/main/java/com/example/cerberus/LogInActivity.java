@@ -2,50 +2,67 @@ package com.example.cerberus;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
-import twitter4j.Query;
-import twitter4j.QueryResult;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.ConfigurationBuilder;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.DefaultLogger;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class LogInActivity extends AppCompatActivity {
 
     public static final String TAG = "Twitter";
+    public TwitterLoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        TwitterConfig config = new TwitterConfig.Builder(this)
+                .logger(new DefaultLogger(Log.DEBUG))
+                .twitterAuthConfig(new TwitterAuthConfig(BuildConfig.TwitterApiKey, BuildConfig.TwitterApiKeySecret))
+                .debug(true)
+                .build();
+        Twitter.initialize(config);
+        //Twitter.initialize(this);
         setContentView(R.layout.activity_log_in);
-        (new GetData()).execute();
+
+        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
+        loginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                // Do something with result, which provides a TwitterSession for making API calls
+                TwitterSession session = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                TwitterAuthToken authToken = session.getAuthToken();
+                String token = authToken.token;
+                String secret = authToken.secret;
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Toast.makeText(LogInActivity.this,"FAILED TO LOG IN!", Toast.LENGTH_LONG).show();
+                Log.e(TAG, "STACK TRACE FOLLOWING");
+                exception.printStackTrace();
+            }
+        });
     }
 
-    class GetData extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            ConfigurationBuilder cb = new ConfigurationBuilder();
-            cb.setDebugEnabled(true)
-                    .setOAuthConsumerKey(BuildConfig.TwitterApiKey)
-                    .setOAuthConsumerSecret(BuildConfig.TwitterApiKeySecret)
-                    .setOAuthAccessToken(BuildConfig.TwitterAccessToken)
-                    .setOAuthAccessTokenSecret(BuildConfig.TwitterAccessTokenSecret);
-            TwitterFactory tf = new TwitterFactory(cb.build());
-            Twitter twitter = tf.getInstance();
-            Query query = new Query("pizza");
-            QueryResult result = null;
-            try {
-                result = twitter.search(query);
-            } catch (TwitterException e) {
-                e.printStackTrace();
-            }
-            for (twitter4j.Status status : result.getTweets()) {
-                Log.d(TAG,"@" + status.getUser().getScreenName() + ":" + status.getText());
-            }
-            return null;
-        }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Pass the activity result to the login button.
+        loginButton.onActivityResult(requestCode, resultCode, data);
     }
 }
