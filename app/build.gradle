@@ -23,10 +23,12 @@ android {
     }
 
     buildTypes.each {
+        it.buildConfigField 'String', 'FacebookAppId', FACEBOOK_APP_ID
+        it.buildConfigField 'String', 'FbLoginProtocolScheme', FB_LOGIN_PROTOCOL_SCHEME
         it.buildConfigField 'String', 'TwitterApiKey', TWITTER_API_KEY
         it.buildConfigField 'String', 'TwitterApiKeySecret', TWITTER_API_KEY_SECRET
-        it.buildConfigField 'String', 'TwitterAccessToken', TWITTER_ACCESS_TOKEN
-        it.buildConfigField 'String', 'TwitterAccessTokenSecret', TWITTER_ACCESS_TOKEN_SECRET
+        it.buildConfigField 'String', 'TwitterAccessToken', TWITTER_ACCESS_TOKEN //not used
+        it.buildConfigField 'String', 'TwitterAccessTokenSecret', TWITTER_ACCESS_TOKEN_SECRET //not used
 
     }
 
@@ -45,6 +47,8 @@ dependencies {
     implementation('com.twitter.sdk.android:twitter:3.3.0@aar') {
         transitive = true
     }
+    implementation 'com.facebook.android:facebook-login:[8.1)'
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
