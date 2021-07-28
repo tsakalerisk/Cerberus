@@ -3,20 +3,19 @@ package com.example.cerberus;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.squareup.picasso.Picasso;
@@ -34,56 +33,21 @@ public class LogInActivity extends AppCompatActivity {
     private LoginButton fbLoginButton = null;
     private ImageView fbImage = null;
     private TextView fbName = null;
+    private CallbackManager facebookCallbackManager = null;
+    private AccessTokenTracker facebookAccessTokenTracker = null;
     private Button twLoginButton = null;
     private ImageView twImage = null;
     private TextView twName = null;
-    private CallbackManager callbackManager = null;
     private Twitter twitter = null;
     private RequestToken requestToken = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_log_in);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         findAllViews();
         setFacebookCallback();
-    }
-
-    private void setFacebookCallback() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        FacebookSdk.setApplicationId(BuildConfig.FacebookAppId);
-        fbLoginButton.setPermissions("email", "public_profile");
-        callbackManager = CallbackManager.Factory.create();
-        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG_FACEBOOK, "Success!");
-                /*String userId = loginResult.getAccessToken().getUserId();
-                GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        displayFacebookInfo(object);
-                    }
-                });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "first_name, last_name, picture.type(large)");
-                graphRequest.setParameters(parameters);
-                graphRequest.executeAsync();*/
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e(TAG_FACEBOOK, "Cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                error.printStackTrace();
-                Log.e(TAG_FACEBOOK, error.toString());
-            }
-        });
     }
 
     protected void findAllViews() {
@@ -96,10 +60,42 @@ public class LogInActivity extends AppCompatActivity {
         twName = findViewById(R.id.twName);
     }
 
+    private void setFacebookCallback() {
+        facebookAccessTokenTracker = createFacebookAccessTokenTracker();
+        fbLoginButton.setPermissions("email", "public_profile");
+        facebookCallbackManager = CallbackManager.Factory.create();
+        fbLoginButton.registerCallback(facebookCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG_FACEBOOK, "Success!");
+                facebookAccessTokenTracker.startTracking();
+                requestFacebookInfo(loginResult);
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e(TAG_FACEBOOK, "Cancelled");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                error.printStackTrace();
+                Log.e(TAG_FACEBOOK, "Failed!");
+            }
+        });
+    }
+
+    private void requestFacebookInfo(LoginResult loginResult) {
+        String userId = loginResult.getAccessToken().getUserId();
+        GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> displayFacebookInfo(object));
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "first_name, last_name, picture.type(large)");
+        graphRequest.setParameters(parameters);
+        graphRequest.executeAsync();
+    }
+
     public void displayFacebookInfo(JSONObject object) {
-        String firstName, lastName;
-        firstName = "";
-        lastName = "";
+        String firstName = "", lastName = "";
         try {
             firstName = object.getString("first_name");
             lastName = object.getString("last_name");
@@ -110,5 +106,26 @@ public class LogInActivity extends AppCompatActivity {
         }
 
         fbName.setText(firstName + " " + lastName);
+    }
+
+    public AccessTokenTracker createFacebookAccessTokenTracker() {
+        return new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    Log.d(TAG_FACEBOOK, "Logged out");
+
+                    //Ew, hardcoded strings
+                    fbName.setText("Δεν είστε συνδεδεμένοι");
+                    fbImage.setImageResource(R.drawable.user_icon);
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
