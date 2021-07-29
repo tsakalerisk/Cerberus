@@ -10,7 +10,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
         android:text="Σύνδεση"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,23 +22,36 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView">
 
-        <ImageView
-            android:id="@+id/fbImage"
-            app:srcCompat="@drawable/user_icon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <FrameLayout
+            android:id="@+id/fbImageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@drawable/user_icon" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/fbImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/user_icon"
+
+                tools:srcCompat="@drawable/user_icon" />
+
+            <ImageView
+                android:id="@+id/fbFilter"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/profile_filter" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/fbName"
@@ -50,11 +63,47 @@
             android:text="Δεν είστε συνδεδεμένοι"
             android:textAllCaps="false"
             android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/fbImage"
+            app:layout_constraintBottom_toBottomOf="@+id/fbImageLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/fbImage"
-            app:layout_constraintTop_toTopOf="@+id/fbImage" />
+            app:layout_constraintStart_toEndOf="@+id/fbImageLayout"
+            app:layout_constraintTop_toTopOf="@+id/fbImageLayout" />
+
+        <FrameLayout
+            android:id="@+id/fbPageImageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/fbImageLayout"
+            app:layout_constraintStart_toStartOf="@+id/fbImageLayout"
+            app:layout_constraintTop_toBottomOf="@+id/fbImageLayout">
+
+            <ImageView
+                android:id="@+id/fbPageImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/page_icon"
+
+                tools:srcCompat="@drawable/page_icon" />
+
+            <ImageView
+                android:id="@+id/fbPageFilter"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                app:srcCompat="@drawable/profile_filter" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/fbPageName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Δεν συνδέθηκε σελίδα"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/fbPageImageLayout"
+            app:layout_constraintEnd_toEndOf="@+id/fbName"
+            app:layout_constraintStart_toStartOf="@+id/fbName"
+            app:layout_constraintTop_toTopOf="@+id/fbPageImageLayout" />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/fbButton"
@@ -62,13 +111,14 @@
             android:layout_height="30dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fbImage" />
+            app:layout_constraintTop_toBottomOf="@+id/fbPageImageLayout"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -77,22 +127,36 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:background="@drawable/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facebookFrame">
 
-        <ImageView
-            android:id="@+id/twImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+        <FrameLayout
+            android:id="@+id/twImageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/twImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/user_icon"
+
+                tools:srcCompat="@drawable/user_icon" />
+
+            <ImageView
+                android:id="@+id/twFilter"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/profile_filter" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/twName"
@@ -100,11 +164,106 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="32dp"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="@+id/twImage"
+            android:text="Δεν είστε συνδεδεμένοι"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/twImageLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/twImage"
-            app:layout_constraintTop_toTopOf="@+id/twImage" />
+            app:layout_constraintStart_toEndOf="@+id/twImageLayout"
+            app:layout_constraintTop_toTopOf="@+id/twImageLayout" />
+
+        <Button
+            android:id="@+id/twButton"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/twImageLayout"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/instaFrame"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/border"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/twitterFrame">
+
+        <FrameLayout
+            android:id="@+id/instaImageLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/instaImage"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/user_icon"
+
+                tools:srcCompat="@drawable/user_icon" />
+
+            <ImageView
+                android:id="@+id/instaFilter"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                app:srcCompat="@drawable/profile_filter" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/instaName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="32dp"
+            android:text="Δεν είστε συνδεδεμένοι"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/instaImageLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/instaImageLayout"
+            app:layout_constraintTop_toTopOf="@+id/instaImageLayout" />
+
+        <Button
+            android:id="@+id/instaButton"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="16dp"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/instaImageLayout"
+            tools:ignore="TouchTargetSizeCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/buttonNext"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:drawableRight="@drawable/arrow_right"
+        android:text="ΣΥΝΕΧΕΙΑ"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instaFrame" />
 </androidx.constraintlayout.widget.ConstraintLayout>

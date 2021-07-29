@@ -5,40 +5,38 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.squareup.picasso.Picasso;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import twitter4j.Twitter;
 import twitter4j.auth.RequestToken;
 
 public class LogInActivity extends AppCompatActivity {
 
-    public static final String TAG_TWITTER = "Twitter";
+    public static final boolean AUTO_LOG_OUT = true;
+
     public static final String TAG_FACEBOOK = "Facebook";
-    private LoginButton fbLoginButton = null;
-    private ImageView fbImage = null;
-    private TextView fbName = null;
-    private CallbackManager facebookCallbackManager = null;
-    private AccessTokenTracker facebookAccessTokenTracker = null;
+    public static final String TAG_TWITTER = "Twitter";
+
+    public LoginButton fbLoginButton = null;
+    public ImageView fbImage = null;
+    public TextView fbName = null;
+    public ImageView fbPageImage = null;
+    public TextView fbPageName = null;
+    private FacebookLogInManager facebookLogInManager = null;
+
     private Button twLoginButton = null;
     private ImageView twImage = null;
     private TextView twName = null;
     private Twitter twitter = null;
+
+    private Button instaLoginButton = null;
+    private ImageView instaImage = null;
+    private TextView instaName = null;
+
     private RequestToken requestToken = null;
 
     @Override
@@ -47,85 +45,34 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         findAllViews();
-        setFacebookCallback();
+        facebookLogInManager = new FacebookLogInManager(this);
     }
 
     protected void findAllViews() {
         fbLoginButton = findViewById(R.id.fbButton);
         fbImage = findViewById(R.id.fbImage);
         fbName = findViewById(R.id.fbName);
+        fbPageImage = findViewById(R.id.fbPageImage);
+        fbPageName = findViewById(R.id.fbPageName);
 
-        //twLoginButton = findViewById(R.id.twButton);
+        twLoginButton = findViewById(R.id.twButton);
         twImage = findViewById(R.id.twImage);
         twName = findViewById(R.id.twName);
-    }
 
-    private void setFacebookCallback() {
-        facebookAccessTokenTracker = createFacebookAccessTokenTracker();
-        fbLoginButton.setPermissions("email", "public_profile");
-        facebookCallbackManager = CallbackManager.Factory.create();
-        fbLoginButton.registerCallback(facebookCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG_FACEBOOK, "Success!");
-                facebookAccessTokenTracker.startTracking();
-                requestFacebookInfo(loginResult);
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e(TAG_FACEBOOK, "Cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                error.printStackTrace();
-                Log.e(TAG_FACEBOOK, "Failed!");
-            }
-        });
-    }
-
-    private void requestFacebookInfo(LoginResult loginResult) {
-        String userId = loginResult.getAccessToken().getUserId();
-        GraphRequest graphRequest = GraphRequest.newMeRequest(loginResult.getAccessToken(), (object, response) -> displayFacebookInfo(object));
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "first_name, last_name, picture.type(large)");
-        graphRequest.setParameters(parameters);
-        graphRequest.executeAsync();
-    }
-
-    public void displayFacebookInfo(JSONObject object) {
-        String firstName = "", lastName = "";
-        try {
-            firstName = object.getString("first_name");
-            lastName = object.getString("last_name");
-            String imageUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
-            Picasso.get().load(imageUrl).into(fbImage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        fbName.setText(firstName + " " + lastName);
-    }
-
-    public AccessTokenTracker createFacebookAccessTokenTracker() {
-        return new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                if (currentAccessToken == null) {
-                    Log.d(TAG_FACEBOOK, "Logged out");
-
-                    //Ew, hardcoded strings
-                    fbName.setText("Δεν είστε συνδεδεμένοι");
-                    fbImage.setImageResource(R.drawable.user_icon);
-                }
-            }
-        };
+        instaLoginButton = findViewById(R.id.instaButton);
+        instaImage = findViewById(R.id.instaImage);
+        instaName = findViewById(R.id.instaName);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        facebookCallbackManager.onActivityResult(requestCode, resultCode, data);
+        facebookLogInManager.callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        facebookLogInManager.accessTokenTracker.stopTracking();
     }
 }
