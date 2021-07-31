@@ -3,6 +3,7 @@ package com.example.cerberus;
 import static com.example.cerberus.LogInActivity.AUTO_LOG_OUT;
 import static com.example.cerberus.LogInActivity.TAG_FACEBOOK;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,10 +24,10 @@ import org.json.JSONObject;
 
 public class FacebookLogInManager {
     private final LogInActivity logInActivity;
-    public CallbackManager callbackManager = null;
+    private CallbackManager callbackManager = null;
     private AccessToken userAccessToken = null;
     private AccessToken pageAccessToken = null;
-    public AccessTokenTracker accessTokenTracker = null;
+    private AccessTokenTracker accessTokenTracker = null;
 
     public FacebookLogInManager(LogInActivity logInActivity) {
         this.logInActivity = logInActivity;
@@ -134,5 +135,13 @@ public class FacebookLogInManager {
                 requestFacebookInfo();
             }
         }
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void onDestroy() {
+        accessTokenTracker.stopTracking();
     }
 }
