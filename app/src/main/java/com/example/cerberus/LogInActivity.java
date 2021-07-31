@@ -42,6 +42,11 @@ public class LogInActivity extends AppCompatActivity {
     public TextView fbName = null;
     public ImageView fbPageImage = null;
     public TextView fbPageName = null;
+
+    public ImageView instaImage = null;
+    public TextView instaName = null;
+    public TextView instaUsername = null;
+
     private FacebookLogInManager facebookLogInManager = null;
 
     public TwitterLoginButton twLogInButton = null;
@@ -49,11 +54,8 @@ public class LogInActivity extends AppCompatActivity {
     public ImageView twImage = null;
     public TextView twName = null;
     public TextView twScreenName = null;
-    private TwitterLogInManager twitterLogInManager = null;
 
-    private Button instaLoginButton = null;
-    private ImageView instaImage = null;
-    private TextView instaName = null;
+    private TwitterLogInManager twitterLogInManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +81,9 @@ public class LogInActivity extends AppCompatActivity {
         twName = findViewById(R.id.twName);
         twScreenName = findViewById(R.id.twScreenName);
 
-        instaLoginButton = findViewById(R.id.instaButton);
         instaImage = findViewById(R.id.instaImage);
         instaName = findViewById(R.id.instaName);
+        instaUsername = findViewById(R.id.instaUsername);
     }
 
     @Override

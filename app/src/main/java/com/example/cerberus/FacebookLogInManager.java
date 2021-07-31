@@ -29,6 +29,14 @@ public class FacebookLogInManager {
     private AccessToken pageAccessToken = null;
     private AccessTokenTracker accessTokenTracker = null;
 
+    private final String PERMISSIONS = "public_profile," +
+            " pages_show_list," +
+            " pages_manage_posts," +
+            " pages_read_engagement," +
+            " instagram_basic," +
+            " instagram_content_publish," +
+            " instagram_manage_comments";
+
     public FacebookLogInManager(LogInActivity logInActivity) {
         this.logInActivity = logInActivity;
         checkIfLoggedIn();
@@ -37,7 +45,7 @@ public class FacebookLogInManager {
 
     private void setFacebookCallback() {
         accessTokenTracker = createFacebookAccessTokenTracker();
-        logInActivity.fbLoginButton.setPermissions("public_profile, pages_show_list, pages_manage_posts, pages_read_engagement");
+        logInActivity.fbLoginButton.setPermissions(PERMISSIONS);
         callbackManager = CallbackManager.Factory.create();
         logInActivity.fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -72,7 +80,7 @@ public class FacebookLogInManager {
         GraphRequest pageGraphRequest = GraphRequest.newGraphPathRequest(userAccessToken,
                 "me/accounts", this::displayFacebookPageInfo);
         Bundle pageParameters = new Bundle();
-        pageParameters.putString("fields", "name, picture, access_token, id");
+        pageParameters.putString("fields", "name, picture, access_token, id, instagram_business_account");
         pageGraphRequest.setParameters(pageParameters);
         pageGraphRequest.executeAsync();
     }
@@ -87,6 +95,26 @@ public class FacebookLogInManager {
             logInActivity.fbPageName.setText(pageData.getString("name"));
             String imageUrl = pageData.getJSONObject("picture").getJSONObject("data").getString("url");
             Picasso.get().load(imageUrl).into(logInActivity.fbPageImage);
+            requestInstagramInfo(pageData.getJSONObject("instagram_business_account").getString("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void requestInstagramInfo(String id) {
+        GraphRequest instaUserRequest = GraphRequest.newGraphPathRequest(userAccessToken, id, this::displayInstagramUserInfo);
+        Bundle instaParameters = new Bundle();
+        instaParameters.putString("fields", "name, profile_picture_url, username");
+        instaUserRequest.setParameters(instaParameters);
+        instaUserRequest.executeAsync();
+    }
+
+    private void displayInstagramUserInfo(GraphResponse graphResponse) {
+        try {
+            JSONObject data = graphResponse.getJSONObject();
+            logInActivity.instaName.setText(data.getString("name"));
+            logInActivity.instaUsername.setText("@" + data.getString("username"));
+            Picasso.get().load(data.getString("profile_picture_url")).into(logInActivity.instaImage);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -143,5 +171,13 @@ public class FacebookLogInManager {
 
     public void onDestroy() {
         accessTokenTracker.stopTracking();
+    }
+
+    public AccessToken getUserAccessToken() {
+        return userAccessToken;
+    }
+
+    public AccessToken getPageAccessToken() {
+        return pageAccessToken;
     }
 }
