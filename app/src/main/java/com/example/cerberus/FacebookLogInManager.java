@@ -147,6 +147,10 @@ public class FacebookLogInManager {
 
                     logInActivity.fbPageName.setText("Δεν συνδέθηκε σελίδα");
                     logInActivity.fbPageImage.setImageResource(R.drawable.page_icon);
+
+                    logInActivity.instaName.setText("Δεν είστε συνδεδεμένοι");
+                    logInActivity.instaUsername.setText("");
+                    logInActivity.instaImage.setImageResource(R.drawable.user_icon);
                 }
             }
         };
