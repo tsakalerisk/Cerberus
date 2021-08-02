@@ -1,12 +1,7 @@
 package com.example.cerberus;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.View;
-import android.webkit.CookieManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,21 +9,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.example.cerberus.LoginManagers.FacebookLogInManager;
+import com.example.cerberus.LoginManagers.TwitterLogInManager;
+import com.example.cerberus.R;
 import com.facebook.login.widget.LoginButton;
-import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.DefaultLogger;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
-import com.twitter.sdk.android.core.models.User;
-
-import retrofit2.Call;
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -47,14 +32,15 @@ public class LogInActivity extends AppCompatActivity {
     public TextView instaName = null;
     public TextView instaUsername = null;
 
-    private FacebookLogInManager facebookLogInManager = null;
-
     public TwitterLoginButton twLogInButton = null;
     public Button twLogOutButton = null;
     public ImageView twImage = null;
     public TextView twName = null;
     public TextView twScreenName = null;
 
+    public Button buttonNext = null;
+
+    private FacebookLogInManager facebookLogInManager = null;
     private TwitterLogInManager twitterLogInManager = null;
 
     @Override
@@ -66,6 +52,7 @@ public class LogInActivity extends AppCompatActivity {
         findAllViews();
         facebookLogInManager = new FacebookLogInManager(this);
         twitterLogInManager.init();
+        buttonNext.setOnClickListener(v -> startActivity(new Intent(this, FeedActivity.class)));
     }
 
     protected void findAllViews() {
@@ -84,12 +71,14 @@ public class LogInActivity extends AppCompatActivity {
         instaImage = findViewById(R.id.instaImage);
         instaName = findViewById(R.id.instaName);
         instaUsername = findViewById(R.id.instaUsername);
+
+        buttonNext = findViewById(R.id.buttonNext);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         facebookLogInManager.onActivityResult(requestCode, resultCode, data);
-        twLogInButton.onActivityResult(requestCode, resultCode, data);
+        twitterLogInManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 

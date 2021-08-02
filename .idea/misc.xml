@@ -4,7 +4,24 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/arrow_right.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/border.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/button_fill.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/button_stroke.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/button_stroke_transparent.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/check.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/facebook_post_off.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/facebook_post_on.xml" value="0.3828125" />
         <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/ic_page_icon.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/page_icon.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/photo.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/post_button_off.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/post_button_on.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/rounded_filter.xml" value="0.3828125" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/toggle_button_background.xml" value="0.22135416666666666" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/twitter_post_off.xml" value="0.225" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/drawable/twitter_post_on.xml" value="0.225" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/layout/activity_api_key.xml" value="0.36666666666666664" />
+        <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/layout/activity_feed.xml" value="0.3645833333333333" />
         <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/layout/activity_log_in.xml" value="0.35778985507246375" />
         <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Konstantinos/Panepistimio/Askhseis/Anaptyksh Efarmogwn gia Kinhtes Syskeues/Cerberus/app/src/main/res/layout/activity_test.xml" value="0.33" />
