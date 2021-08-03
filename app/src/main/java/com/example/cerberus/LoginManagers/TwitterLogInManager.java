@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.CookieManager;
 
 import com.example.cerberus.BuildConfig;
+import com.example.cerberus.CustomTwitterApiClient;
 import com.example.cerberus.LogInActivity;
 import com.example.cerberus.R;
 import com.squareup.picasso.Picasso;
@@ -28,7 +29,7 @@ import com.twitter.sdk.android.core.models.User;
 import retrofit2.Call;
 
 public class TwitterLogInManager {
-    private LogInActivity logInActivity = null;
+    private final LogInActivity logInActivity;
 
     public TwitterLogInManager(LogInActivity logInActivity) {
         this.logInActivity = logInActivity;
@@ -94,8 +95,12 @@ public class TwitterLogInManager {
         setLogOutVisibility(false);
     }
 
-    private boolean isLoggedIn() {
-        return TwitterCore.getInstance().getSessionManager().getActiveSession() != null;
+    public boolean isLoggedIn() {
+        return getActiveSession() != null;
+    }
+
+    private TwitterSession getActiveSession() {
+        return TwitterCore.getInstance().getSessionManager().getActiveSession();
     }
 
     private void logOut() {
@@ -105,6 +110,8 @@ public class TwitterLogInManager {
     }
 
     private void requestUserInfo() {
+        //Add custom API Client before making any calls
+        TwitterCore.getInstance().addApiClient(getActiveSession(), new CustomTwitterApiClient(getActiveSession()));
         Call<User> user = TwitterCore.getInstance().getApiClient().getAccountService()
                 .verifyCredentials(false, false, false);
         user.enqueue(new Callback<User>() {

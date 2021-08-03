@@ -160,7 +160,6 @@ public class FacebookLogInManager {
     private void checkIfLoggedIn() {
         if (AUTO_LOG_OUT) {
             LoginManager.getInstance().logOut();
-            Log.d(TAG_FACEBOOK, "check");
         }
         else {
             userAccessToken = AccessToken.getCurrentAccessToken();
@@ -177,6 +176,8 @@ public class FacebookLogInManager {
     public void onDestroy() {
         accessTokenTracker.stopTracking();
     }
+
+    public boolean isLoggedIn() {return AccessToken.getCurrentAccessToken() != null;}
 
     public AccessToken getUserAccessToken() {
         return userAccessToken;

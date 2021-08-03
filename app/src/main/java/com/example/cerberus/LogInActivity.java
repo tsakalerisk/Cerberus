@@ -1,5 +1,6 @@
 package com.example.cerberus;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -13,6 +14,7 @@ import com.example.cerberus.LoginManagers.FacebookLogInManager;
 import com.example.cerberus.LoginManagers.TwitterLogInManager;
 import com.example.cerberus.R;
 import com.facebook.login.widget.LoginButton;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class LogInActivity extends AppCompatActivity {
@@ -52,7 +54,17 @@ public class LogInActivity extends AppCompatActivity {
         findAllViews();
         facebookLogInManager = new FacebookLogInManager(this);
         twitterLogInManager.init();
-        buttonNext.setOnClickListener(v -> startActivity(new Intent(this, FeedActivity.class)));
+        buttonNext.setOnClickListener(v -> {
+            if (facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
+                startActivity(new Intent(this, FeedActivity.class));
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Συνδεθείτε για να προχωρήσετε.")
+                        .setPositiveButton("OK", null);
+                builder.create().show();
+            }
+        });
     }
 
     protected void findAllViews() {

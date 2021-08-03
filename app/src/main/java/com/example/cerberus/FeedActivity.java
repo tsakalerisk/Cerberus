@@ -1,22 +1,18 @@
 package com.example.cerberus;
 
+import static com.example.cerberus.PhotoLoader.REQUEST_CODE_READ_STORAGE;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,10 +20,23 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.twitter.sdk.android.core.TwitterCore;
+
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class FeedActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CODE_READ_STORAGE = 101;
-    private final int IMAGE_RETURN_CODE = 0x5656;
+    public static final int AREA_CODE_GREECE = 23424833;
+    public static final int AREA_CODE_WORLD = 1;
+    public static final String TWITTER_TAG = "Twitter";
 
     private SearchView searchView = null;
     private ToggleButton fbPostToggle = null;
@@ -40,8 +49,8 @@ public class FeedActivity extends AppCompatActivity {
     private TextView photoNameTextView = null;
     private Button deletePhotoButton = null;
 
-    private static boolean READ_STORAGE_PERM_GRANTED = false;
-    private ImageInfo loadedBitmapInfo = null;
+    private final PhotoLoader photoLoader = new PhotoLoader(this);
+    private PhotoLoader.PhotoInfo loadedBitmapInfo = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +59,46 @@ public class FeedActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         findAllViews();
+        setUpSearchView();
         setUpButtonListeners();
+    }
 
+    private void setUpSearchView() {
         int searchPlateId = getResources().getIdentifier("android:id/search_plate", null, null);
         View searchPlate = findViewById(searchPlateId);
         searchPlate.setBackgroundResource(0);
+    }
+
+    private void getTrendList() {
+        Call<ResponseBody> call = getTwitterClient().getTrendsService().getTrends(AREA_CODE_GREECE);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    if (response.isSuccessful()) {
+                        String resultString = response.body().string();
+                        JSONArray trends = new JSONArray(resultString).getJSONObject(0).getJSONArray("trends");
+                        List<String> trendList = new ArrayList<>();
+                        for (int i = 0; i < trends.length(); i++) {
+                            trendList.add(trends.getJSONObject(i).getString("name"));
+                        }
+                    }
+                    else Log.d(TWITTER_TAG, response.errorBody().string());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.d(TWITTER_TAG, "Failed getting trends");
+                t.printStackTrace();
+            }
+        });
+    }
+
+    private CustomTwitterApiClient getTwitterClient() {
+        return (CustomTwitterApiClient) TwitterCore.getInstance().getApiClient();
     }
 
     private void findAllViews() {
@@ -126,8 +170,7 @@ public class FeedActivity extends AppCompatActivity {
         });
 
         addPhotoButton.setOnClickListener(v -> {
-            checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_CODE_READ_STORAGE, () -> READ_STORAGE_PERM_GRANTED = true);
-            pickImage();
+            photoLoader.pickPhoto();
         });
 
         deletePhotoButton.setOnClickListener(v -> {
@@ -135,14 +178,6 @@ public class FeedActivity extends AppCompatActivity {
             photoButtonLayout.setVisibility(View.GONE);
             addPhotoButton.setVisibility(View.VISIBLE);
         });
-    }
-
-    private void pickImage() {
-        if (READ_STORAGE_PERM_GRANTED) {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, IMAGE_RETURN_CODE);
-        }
     }
 
     private void updatePostButton() {
@@ -153,66 +188,29 @@ public class FeedActivity extends AppCompatActivity {
             postButton.setEnabled(false);
     }
 
-    private void onImageReturned(Intent data) {
+    private void onPhotoReturned(Intent data) {
         photoButtonLayout.setVisibility(View.VISIBLE);
         addPhotoButton.setVisibility(View.INVISIBLE);
-        loadedBitmapInfo = getPictureInfo(data.getData());
+        loadedBitmapInfo = photoLoader.getPhotoInfo(data.getData());
         photoImageView.setImageBitmap(loadedBitmapInfo.bitmap);
         photoNameTextView.setText(loadedBitmapInfo.name);
     }
-
-    public ImageInfo getPictureInfo(Uri selectedImage) {
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-        cursor.moveToFirst();
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
-        cursor.close();
-        return new ImageInfo(picturePath);
-    }
-
-    public void checkPermission(String permission, final int code, SetFlagInterface setFlagInterface) {
-        int hasReadStoragePermission = ContextCompat.checkSelfPermission(FeedActivity.this, permission);
-        if (hasReadStoragePermission == PackageManager.PERMISSION_GRANTED) {
-            setFlagInterface.setFlag();
-        }
-        else {
-            String[] permissionsToAsk = new String[]{permission};
-            ActivityCompat.requestPermissions(FeedActivity.this, permissionsToAsk, code);
-        }
-    }
-
-    //So that on calling checkPermission I can pass a lambda that sets a different flag every time
-    //See addPhotoButton listener.
-    public interface SetFlagInterface {void setFlag();}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch(requestCode) {
             case REQUEST_CODE_READ_STORAGE:
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    READ_STORAGE_PERM_GRANTED = true;
-                    pickImage();
+                    photoLoader.onPermissionGranted();
                 }
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK && requestCode == IMAGE_RETURN_CODE) {
-            onImageReturned(data);
+        if (resultCode == RESULT_OK && requestCode == PhotoLoader.PHOTO_RETURN_CODE) {
+            onPhotoReturned(data);
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public class ImageInfo {
-        public Bitmap bitmap;
-        public String path, name;
-
-        public ImageInfo(String path) {
-            this.path = path;
-            this.name = path.substring(path.lastIndexOf("/") + 1);
-            this.bitmap = BitmapFactory.decodeFile(path);
-        }
     }
 }
