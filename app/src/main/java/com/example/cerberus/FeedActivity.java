@@ -11,21 +11,28 @@ import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.twitter.sdk.android.core.TwitterCore;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicLong;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -34,11 +41,7 @@ import retrofit2.Response;
 
 public class FeedActivity extends AppCompatActivity {
 
-    public static final int AREA_CODE_GREECE = 23424833;
-    public static final int AREA_CODE_WORLD = 1;
-    public static final String TWITTER_TAG = "Twitter";
-
-    private SearchView searchView = null;
+    public SearchView searchView = null;
     private ToggleButton fbPostToggle = null;
     private ToggleButton twPostToggle = null;
     private ToggleButton instaPostToggle = null;
@@ -52,6 +55,7 @@ public class FeedActivity extends AppCompatActivity {
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     private PhotoLoader.PhotoInfo loadedBitmapInfo = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,46 +63,8 @@ public class FeedActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         findAllViews();
-        setUpSearchView();
+        SearchManager.setUpSearchView(this);
         setUpButtonListeners();
-    }
-
-    private void setUpSearchView() {
-        int searchPlateId = getResources().getIdentifier("android:id/search_plate", null, null);
-        View searchPlate = findViewById(searchPlateId);
-        searchPlate.setBackgroundResource(0);
-    }
-
-    private void getTrendList() {
-        Call<ResponseBody> call = getTwitterClient().getTrendsService().getTrends(AREA_CODE_GREECE);
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                try {
-                    if (response.isSuccessful()) {
-                        String resultString = response.body().string();
-                        JSONArray trends = new JSONArray(resultString).getJSONObject(0).getJSONArray("trends");
-                        List<String> trendList = new ArrayList<>();
-                        for (int i = 0; i < trends.length(); i++) {
-                            trendList.add(trends.getJSONObject(i).getString("name"));
-                        }
-                    }
-                    else Log.d(TWITTER_TAG, response.errorBody().string());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.d(TWITTER_TAG, "Failed getting trends");
-                t.printStackTrace();
-            }
-        });
-    }
-
-    private CustomTwitterApiClient getTwitterClient() {
-        return (CustomTwitterApiClient) TwitterCore.getInstance().getApiClient();
     }
 
     private void findAllViews() {
