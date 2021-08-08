@@ -1,47 +1,42 @@
 package com.example.cerberus;
 
-import static com.example.cerberus.PhotoLoader.REQUEST_CODE_READ_STORAGE;
+import android.app.AlertDialog;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.SearchView;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.os.Bundle;
-import android.provider.BaseColumns;
-import android.util.Log;
-import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
-import android.widget.SearchView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
+import com.example.cerberus.Modules.CustomTwitterApiClient;
+import com.example.cerberus.Modules.PhotoLoader;
+import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
+import com.example.cerberus.Modules.SearchManager;
+import com.example.cerberus.Modules.TweetManager;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.tweetui.TweetView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.List;
 
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicLong;
-
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class FeedActivity extends AppCompatActivity {
 
     public SearchView searchView = null;
+    public TextView postTextView = null;
     private ToggleButton fbPostToggle = null;
     private ToggleButton twPostToggle = null;
     private ToggleButton instaPostToggle = null;
@@ -53,22 +48,54 @@ public class FeedActivity extends AppCompatActivity {
     private Button deletePhotoButton = null;
 
     private final PhotoLoader photoLoader = new PhotoLoader(this);
-    private PhotoLoader.PhotoInfo loadedBitmapInfo = null;
+    public PhotoInfo loadedPhotoInfo = null;
 
+    private TweetManager tweetManager;
+
+    public static final String TAG = "TAG";
+    public static final boolean DISABLE_POST = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Maybe
+        Twitter.initialize(this);
+        TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        TwitterCore.getInstance().addApiClient(activeSession, new CustomTwitterApiClient(activeSession));
+
+        tweetManager = new TweetManager(this);
+
         setContentView(R.layout.activity_feed);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         findAllViews();
         SearchManager.setUpSearchView(this);
         setUpButtonListeners();
+
+        //Get first tweet
+        Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService().homeTimeline(null,
+                null, null, null, null, null, null);
+        getTimeline.enqueue(new Callback<List<Tweet>>() {
+            @Override
+            public void success(Result<List<Tweet>> result) {
+                TweetView tweetView = findViewById(R.id.tweetView);
+                tweetView.setTweet(result.data.get(0));
+                //Stop view from opening Twitter on click
+                tweetView.setOnClickListener(v -> {});
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d(TAG, "Failed getting first tweet");
+                exception.printStackTrace();
+            }
+        });
     }
 
     private void findAllViews() {
         searchView = findViewById(R.id.searchView);
+        postTextView = findViewById(R.id.postTextView);
         fbPostToggle = findViewById(R.id.fbPostToggle);
         twPostToggle = findViewById(R.id.twPostToggle);
         instaPostToggle = findViewById(R.id.instaPostToggle);
@@ -135,16 +162,47 @@ public class FeedActivity extends AppCompatActivity {
             updatePostButton();
         });
 
-        addPhotoButton.setOnClickListener(v -> {
-            photoLoader.pickPhoto();
-        });
+        addPhotoButton.setOnClickListener(v -> photoLoader.init());
 
-        deletePhotoButton.setOnClickListener(v -> {
-            loadedBitmapInfo = null;
-            photoButtonLayout.setVisibility(View.GONE);
-            addPhotoButton.setVisibility(View.VISIBLE);
+        deletePhotoButton.setOnClickListener(v -> deletePhoto());
+
+        postButton.setOnClickListener(v -> {
+            if (!DISABLE_POST) {
+                if (instaPostToggle.isChecked() && loadedPhotoInfo == null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FeedActivity.this);
+                    builder.setMessage("Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.")
+                            .setPositiveButton("OK", null)
+                            .create().show();
+                } else {
+                    if (fbPostToggle.isChecked()) {
+
+                    }
+                    if (twPostToggle.isChecked()) {
+                        tweetManager.post();
+                        clearPostViews();
+                    }
+                    if (instaPostToggle.isChecked()) {
+
+                    }
+                }
+            }
         });
     }
+
+    private void clearPostViews() {
+        postTextView.setText("");
+        deletePhoto();
+    }
+
+    private void deletePhoto() {
+        if (loadedPhotoInfo != null) {
+            loadedPhotoInfo.bitmap.recycle();
+            loadedPhotoInfo = null;
+        }
+        photoButtonLayout.setVisibility(View.GONE);
+        addPhotoButton.setVisibility(View.VISIBLE);
+    }
+
 
     private void updatePostButton() {
         //If at least one toggle is checked, set active
@@ -154,29 +212,11 @@ public class FeedActivity extends AppCompatActivity {
             postButton.setEnabled(false);
     }
 
-    private void onPhotoReturned(Intent data) {
+    public void onPhotoReturned(PhotoInfo photoInfo) {
         photoButtonLayout.setVisibility(View.VISIBLE);
         addPhotoButton.setVisibility(View.INVISIBLE);
-        loadedBitmapInfo = photoLoader.getPhotoInfo(data.getData());
-        photoImageView.setImageBitmap(loadedBitmapInfo.bitmap);
-        photoNameTextView.setText(loadedBitmapInfo.name);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case REQUEST_CODE_READ_STORAGE:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    photoLoader.onPermissionGranted();
-                }
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == RESULT_OK && requestCode == PhotoLoader.PHOTO_RETURN_CODE) {
-            onPhotoReturned(data);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        loadedPhotoInfo = photoInfo;
+        photoImageView.setImageBitmap(loadedPhotoInfo.bitmap);
+        photoNameTextView.setText(loadedPhotoInfo.name);
     }
 }

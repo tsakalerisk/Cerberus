@@ -1,11 +1,14 @@
 package com.example.cerberus.TwitterServices;
 
-import okhttp3.ResponseBody;
+import com.example.cerberus.TwitterServices.Responses.TrendResponse;
+
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface TrendsService {
     @GET("/1.1/trends/place.json")
-    Call<ResponseBody> getTrends(@Query("id") int areaCode);
+    Call<List<TrendResponse>> getTrends(@Query("id") int areaCode);
 }

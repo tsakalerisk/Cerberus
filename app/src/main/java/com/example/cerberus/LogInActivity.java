@@ -10,11 +10,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.example.cerberus.LoginManagers.FacebookLogInManager;
-import com.example.cerberus.LoginManagers.TwitterLogInManager;
-import com.example.cerberus.R;
+import com.example.cerberus.Modules.LoginManagers.FacebookLogInManager;
+import com.example.cerberus.Modules.LoginManagers.TwitterLogInManager;
 import com.facebook.login.widget.LoginButton;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class LogInActivity extends AppCompatActivity {
@@ -23,6 +21,8 @@ public class LogInActivity extends AppCompatActivity {
 
     public static final String TAG_FACEBOOK = "Facebook";
     public static final String TAG_TWITTER = "Twitter";
+    public static final String FB_USER_TOKEN_LITERAL = "FB_USER_TOKEN";
+    public static final String FB_PAGE_TOKEN_LITERAL = "FB_PAGE_TOKEN";
 
     public LoginButton fbLoginButton = null;
     public ImageView fbImage = null;
@@ -56,13 +56,16 @@ public class LogInActivity extends AppCompatActivity {
         twitterLogInManager.init();
         buttonNext.setOnClickListener(v -> {
             if (facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
-                startActivity(new Intent(this, FeedActivity.class));
+                Intent intent = new Intent(this, FeedActivity.class);
+                intent.putExtra(FB_USER_TOKEN_LITERAL, facebookLogInManager.getUserAccessToken());
+                intent.putExtra(FB_PAGE_TOKEN_LITERAL, facebookLogInManager.getPageAccessToken());
+                startActivity(intent);
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("Συνδεθείτε για να προχωρήσετε.")
-                        .setPositiveButton("OK", null);
-                builder.create().show();
+                        .setPositiveButton("OK", null)
+                        .create().show();
             }
         });
     }
