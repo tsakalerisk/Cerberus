@@ -21,9 +21,11 @@ import retrofit2.Call;
 
 public class TweetManager {
     private static final String TAG = "TAG";
+    public static final int QUALITY = 100;
     private final FeedActivity feedActivity;
     private final CustomTwitterApiClient twitterClient;
     private PhotoInfo loadedPhotoInfo = null;
+    private String status = null;
 
     public TweetManager(FeedActivity feedActivity) {
         this.feedActivity = feedActivity;
@@ -32,6 +34,8 @@ public class TweetManager {
 
     public void post() {
         loadedPhotoInfo = feedActivity.loadedPhotoInfo;
+        //Save status because it will be erased from the TextView
+        status = feedActivity.postTextView.getText().toString();
         if (loadedPhotoInfo != null) {
             new Thread(this::tweetWithImage).start();
         }
@@ -41,7 +45,7 @@ public class TweetManager {
     //Computationally heavy
     private void tweetWithImage() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        loadedPhotoInfo.bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        loadedPhotoInfo.bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, stream);
         byte[] byteArray = stream.toByteArray();
         //Easy way
         Call<Media> mediaCall = twitterClient.getMediaService().upload(RequestBody
@@ -100,9 +104,9 @@ public class TweetManager {
     }
 
     private void tweetStatus(String mediaIdString) {
-        Call<Tweet> call = twitterClient.getStatusesService().update(feedActivity.postTextView.getText().toString(),
+        Call<Tweet> call = twitterClient.getStatusesService().update(status,null,
                 null, null, null, null, null,
-                null, null, mediaIdString);
+                null, mediaIdString);
         call.enqueue(new Callback<Tweet>() {
             @Override
             public void success(Result<Tweet> result) {

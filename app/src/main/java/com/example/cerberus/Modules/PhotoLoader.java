@@ -54,7 +54,6 @@ public class PhotoLoader {
             pickPhoto();
         }
         else {
-
             Log.d(TAG, "Asking permission...");
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE);
         }
