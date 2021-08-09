@@ -13,11 +13,11 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
 import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
+import com.example.cerberus.Modules.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
 import com.example.cerberus.Modules.TweetManager;
 import com.twitter.sdk.android.core.Callback;
@@ -37,7 +37,7 @@ public class FeedActivity extends AppCompatActivity {
 
     public SearchView searchView = null;
     public TextView postTextView = null;
-    private ToggleButton fbPostToggle = null;
+    private PostToggleButton fbPostToggle = null;
     private ToggleButton twPostToggle = null;
     private ToggleButton instaPostToggle = null;
     private Button addPhotoButton = null;
@@ -108,59 +108,9 @@ public class FeedActivity extends AppCompatActivity {
     }
 
     private void setUpButtonListeners() {
-        fbPostToggle.setOnClickListener(v -> {
-            if (fbPostToggle.isChecked()) {
-                fbPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_fill));
-                fbPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.com_facebook_blue));
-                fbPostToggle.setTextColor(ContextCompat.getColor(this, R.color.white));
-                fbPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check, 0);
-                fbPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.white));
-            }
-            else {
-                fbPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_stroke));
-                fbPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.com_facebook_blue));
-                fbPostToggle.setTextColor(ContextCompat.getColor(this, R.color.com_facebook_blue));
-                fbPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.uncheck, 0);
-                fbPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.com_facebook_blue));
-            }
-            updatePostButton();
-        });
-
-        twPostToggle.setOnClickListener(v -> {
-            if (twPostToggle.isChecked()) {
-                twPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_fill));
-                twPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.tw__blue_default));
-                twPostToggle.setTextColor(ContextCompat.getColor(this, R.color.white));
-                twPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check, 0);
-                twPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.white));
-            }
-            else {
-                twPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_stroke));
-                twPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.tw__blue_default));
-                twPostToggle.setTextColor(ContextCompat.getColor(this, R.color.tw__blue_default));
-                twPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.uncheck, 0);
-                twPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.tw__blue_default));
-            }
-            updatePostButton();
-        });
-
-        instaPostToggle.setOnClickListener(v -> {
-            if (instaPostToggle.isChecked()) {
-                instaPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_fill));
-                instaPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.instagram_pink));
-                instaPostToggle.setTextColor(ContextCompat.getColor(this, R.color.white));
-                instaPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.check, 0);
-                instaPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.white));
-            }
-            else {
-                instaPostToggle.setBackground(ContextCompat.getDrawable(this, R.drawable.button_stroke));
-                instaPostToggle.getBackground().setTint(ContextCompat.getColor(this, R.color.instagram_pink));
-                instaPostToggle.setTextColor(ContextCompat.getColor(this, R.color.instagram_pink));
-                instaPostToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.uncheck, 0);
-                instaPostToggle.getCompoundDrawables()[2].setTint(ContextCompat.getColor(this, R.color.instagram_pink));
-            }
-            updatePostButton();
-        });
+        fbPostToggle.setOnClickListener(v -> updatePostButton());
+        twPostToggle.setOnClickListener(v -> updatePostButton());
+        instaPostToggle.setOnClickListener(v -> updatePostButton());
 
         addPhotoButton.setOnClickListener(v -> photoLoader.init());
 
@@ -204,7 +154,7 @@ public class FeedActivity extends AppCompatActivity {
     }
 
 
-    private void updatePostButton() {
+    public void updatePostButton() {
         //If at least one toggle is checked, set active
         if (fbPostToggle.isChecked() || twPostToggle.isChecked() || instaPostToggle.isChecked())
             postButton.setEnabled(true);
