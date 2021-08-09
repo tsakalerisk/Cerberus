@@ -3,6 +3,7 @@ package com.example.cerberus.Modules.LoginManagers;
 import static com.example.cerberus.LogInActivity.AUTO_LOG_OUT;
 import static com.example.cerberus.LogInActivity.TAG_TWITTER;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.util.Log;
@@ -115,6 +116,7 @@ public class TwitterLogInManager {
         Call<User> user = TwitterCore.getInstance().getApiClient().getAccountService()
                 .verifyCredentials(false, false, false);
         user.enqueue(new Callback<User>() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void success(Result<User> result) {
                 logInActivity.twName.setText(result.data.name);

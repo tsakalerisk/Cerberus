@@ -1,10 +1,11 @@
-package com.example.cerberus.Modules;
+package com.example.cerberus.Modules.PostManagers;
 
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.cerberus.FeedActivity;
+import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;

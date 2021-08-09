@@ -17,9 +17,11 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
+import com.example.cerberus.Modules.PostManagers.FacebookPostManager;
 import com.example.cerberus.Modules.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
-import com.example.cerberus.Modules.TweetManager;
+import com.example.cerberus.Modules.PostManagers.TweetManager;
+import com.facebook.AccessToken;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -50,8 +52,6 @@ public class FeedActivity extends AppCompatActivity {
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     public PhotoInfo loadedPhotoInfo = null;
 
-    private TweetManager tweetManager;
-
     public static final String TAG = "TAG";
     public static final boolean DISABLE_POST = false;
 
@@ -60,17 +60,15 @@ public class FeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Maybe
-        Twitter.initialize(this);
+        Twitter.initialize(FeedActivity.this);
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         TwitterCore.getInstance().addApiClient(activeSession, new CustomTwitterApiClient(activeSession));
-
-        tweetManager = new TweetManager(this);
 
         setContentView(R.layout.activity_feed);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         findAllViews();
-        SearchManager.setUpSearchView(this);
+        SearchManager.setUpSearchView(FeedActivity.this);
         setUpButtonListeners();
 
         //Get first tweet
@@ -123,12 +121,14 @@ public class FeedActivity extends AppCompatActivity {
                     builder.setMessage("Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.")
                             .setPositiveButton("OK", null)
                             .create().show();
-                } else {
+                }
+                else {
                     if (fbPostToggle.isChecked()) {
-
+                        new FacebookPostManager(this).post();
+                        clearPostViews();
                     }
                     if (twPostToggle.isChecked()) {
-                        tweetManager.post();
+                        new TweetManager(this).post();
                         clearPostViews();
                     }
                     if (instaPostToggle.isChecked()) {

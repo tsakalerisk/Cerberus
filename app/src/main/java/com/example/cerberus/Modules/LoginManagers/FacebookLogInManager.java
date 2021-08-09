@@ -3,6 +3,7 @@ package com.example.cerberus.Modules.LoginManagers;
 import static com.example.cerberus.LogInActivity.AUTO_LOG_OUT;
 import static com.example.cerberus.LogInActivity.TAG_FACEBOOK;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +31,7 @@ public class FacebookLogInManager {
     private AccessToken pageAccessToken = null;
     private AccessTokenTracker accessTokenTracker = null;
 
-    private final String PERMISSIONS = "public_profile," +
+    private static final String PERMISSIONS = "public_profile," +
             " pages_show_list," +
             " pages_manage_posts," +
             " pages_read_engagement," +
@@ -111,6 +112,7 @@ public class FacebookLogInManager {
         instaUserRequest.executeAsync();
     }
 
+    @SuppressLint("SetTextI18n")
     private void displayInstagramUserInfo(GraphResponse graphResponse) {
         try {
             JSONObject data = graphResponse.getJSONObject();
