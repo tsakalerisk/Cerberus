@@ -6,7 +6,6 @@ import android.widget.Toast;
 
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
-import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -15,6 +14,7 @@ import com.twitter.sdk.android.core.models.Media;
 import com.twitter.sdk.android.core.models.Tweet;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -25,7 +25,7 @@ public class TweetManager {
     public static final int QUALITY = 100;
     private final FeedActivity feedActivity;
     private final CustomTwitterApiClient twitterClient;
-    private PhotoInfo loadedPhotoInfo = null;
+    private Bitmap bitmap = null;
     private String status = null;
 
     public TweetManager(FeedActivity feedActivity) {
@@ -34,19 +34,22 @@ public class TweetManager {
     }
 
     public void post() {
-        loadedPhotoInfo = feedActivity.loadedPhotoInfo;
         //Save status because it will be erased from the TextView
         status = feedActivity.postTextView.getText().toString();
-        if (loadedPhotoInfo != null) {
+        if (feedActivity.loadedPhotoInfo != null) {
+            bitmap = feedActivity.loadedPhotoInfo.bitmap
+                    .copy(feedActivity.loadedPhotoInfo.bitmap.getConfig(), true);
             new Thread(this::tweetWithImage).start();
         }
-        else tweetStatus(null);
+        else {
+            tweetStatus(null);
+        }
     }
 
     //Computationally heavy
     private void tweetWithImage() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        loadedPhotoInfo.bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, stream);
         byte[] byteArray = stream.toByteArray();
         //Easy way
         Call<Media> mediaCall = twitterClient.getMediaService().upload(RequestBody
@@ -56,11 +59,13 @@ public class TweetManager {
             public void success(Result<Media> result) {
                 Log.d(TAG, "Uploaded image to Twitter successfully.");
                 tweetStatus(result.data.mediaIdString);
+                bitmap.recycle();
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Log.d(TAG, "Failed to upload image to Twitter.");
+                bitmap.recycle();
             }
         });
 
@@ -118,7 +123,7 @@ public class TweetManager {
             @Override
             public void failure(TwitterException exception) {
                 Log.d(TAG, "Failed to post on Twitter");
-                Log.d(TAG, exception.getMessage());
+                Log.d(TAG, Objects.requireNonNull(exception.getMessage()));
             }
         });
     }

@@ -18,23 +18,21 @@ import java.net.HttpURLConnection;
 
 public class FacebookPostManager {
     private final FeedActivity feedActivity;
-    private AccessToken userAccessToken;
     private final AccessToken pageAccessToken;
     private Bitmap bitmap;
     private final TextView textView;
-
     public static final String TAG = FeedActivity.TAG;
 
     public FacebookPostManager(FeedActivity feedActivity) {
         this.feedActivity = feedActivity;
         textView = feedActivity.postTextView;
-        userAccessToken = feedActivity.getIntent().getParcelableExtra(LogInActivity.FB_USER_TOKEN_LITERAL);
         pageAccessToken = feedActivity.getIntent().getParcelableExtra(LogInActivity.FB_PAGE_TOKEN_LITERAL);
     }
 
     public void post() {
         if (feedActivity.loadedPhotoInfo != null) {
-            bitmap = feedActivity.loadedPhotoInfo.bitmap;
+            bitmap = feedActivity.loadedPhotoInfo.bitmap
+                    .copy(feedActivity.loadedPhotoInfo.bitmap.getConfig(), true);
             postPhoto();
         } else {
             postText();
@@ -44,10 +42,11 @@ public class FacebookPostManager {
     private void postPhoto() {
         GraphRequest graphRequest = GraphRequest.newUploadPhotoRequest(pageAccessToken,
                 pageAccessToken.getUserId() + "/photos",
-                bitmap.copy(bitmap.getConfig(), true),
+                bitmap,
                 textView.getText().toString(),
                 null,
                 response -> {
+                    bitmap.recycle();
                     try {
                         if (response.getConnection().getResponseCode() == HttpURLConnection.HTTP_OK) {
                             Log.d(TAG, "Posted image on Facebook successfully.");

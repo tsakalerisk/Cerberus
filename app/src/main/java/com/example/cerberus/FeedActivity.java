@@ -18,10 +18,10 @@ import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.example.cerberus.Modules.PostManagers.FacebookPostManager;
+import com.example.cerberus.Modules.PostManagers.InstagramPostManager;
 import com.example.cerberus.Modules.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
 import com.example.cerberus.Modules.PostManagers.TweetManager;
-import com.facebook.AccessToken;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -52,6 +52,10 @@ public class FeedActivity extends AppCompatActivity {
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     public PhotoInfo loadedPhotoInfo = null;
 
+    private FacebookPostManager facebookPostManager;
+    public TweetManager tweetManager;
+    public InstagramPostManager instagramPostManager;
+
     public static final String TAG = "TAG";
     public static final boolean DISABLE_POST = false;
 
@@ -70,6 +74,10 @@ public class FeedActivity extends AppCompatActivity {
         findAllViews();
         SearchManager.setUpSearchView(FeedActivity.this);
         setUpButtonListeners();
+
+        facebookPostManager = new FacebookPostManager(FeedActivity.this);
+        tweetManager = new TweetManager(FeedActivity.this);
+        instagramPostManager = new InstagramPostManager(FeedActivity.this);
 
         //Get first tweet
         Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService().homeTimeline(null,
@@ -117,26 +125,32 @@ public class FeedActivity extends AppCompatActivity {
         postButton.setOnClickListener(v -> {
             if (!DISABLE_POST) {
                 if (instaPostToggle.isChecked() && loadedPhotoInfo == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(FeedActivity.this);
-                    builder.setMessage("Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.")
-                            .setPositiveButton("OK", null)
-                            .create().show();
+                    alert("Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.");
                 }
                 else {
                     if (fbPostToggle.isChecked()) {
-                        new FacebookPostManager(this).post();
-                        clearPostViews();
+                        facebookPostManager.post();
                     }
                     if (twPostToggle.isChecked()) {
-                        new TweetManager(this).post();
-                        clearPostViews();
+                        tweetManager.post();
                     }
                     if (instaPostToggle.isChecked()) {
-
+                        instagramPostManager.post();
                     }
+                    clearPostViews();
                 }
             }
+            else
+                alert("Οι δημοσιεύσεις είναι απενεργοποιημένες.");
         });
+    }
+
+    private void alert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(FeedActivity.this);
+        builder.setMessage(message)
+                .setPositiveButton("OK", null)
+                .create()
+                .show();
     }
 
     private void clearPostViews() {
@@ -146,6 +160,7 @@ public class FeedActivity extends AppCompatActivity {
 
     private void deletePhoto() {
         if (loadedPhotoInfo != null) {
+            photoImageView.setImageBitmap(null);
             loadedPhotoInfo.bitmap.recycle();
             loadedPhotoInfo = null;
         }

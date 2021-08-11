@@ -29,6 +29,7 @@ public class FacebookLogInManager {
     private CallbackManager callbackManager = null;
     private AccessToken userAccessToken = null;
     private AccessToken pageAccessToken = null;
+    private String instaUserId = null;
     private AccessTokenTracker accessTokenTracker = null;
 
     private static final String PERMISSIONS = "public_profile," +
@@ -43,10 +44,10 @@ public class FacebookLogInManager {
     public FacebookLogInManager(LogInActivity logInActivity) {
         this.logInActivity = logInActivity;
         checkIfLoggedIn();
-        setFacebookCallback();
+        setFacebookLogInCallback();
     }
 
-    private void setFacebookCallback() {
+    private void setFacebookLogInCallback() {
         accessTokenTracker = createFacebookAccessTokenTracker();
         logInActivity.fbLoginButton.setPermissions(PERMISSIONS);
         callbackManager = CallbackManager.Factory.create();
@@ -98,7 +99,8 @@ public class FacebookLogInManager {
             logInActivity.fbPageName.setText(pageData.getString("name"));
             String imageUrl = pageData.getJSONObject("picture").getJSONObject("data").getString("url");
             Picasso.with(logInActivity).load(imageUrl).into(logInActivity.fbPageImage);
-            requestInstagramInfo(pageData.getJSONObject("instagram_business_account").getString("id"));
+            instaUserId = pageData.getJSONObject("instagram_business_account").getString("id");
+            requestInstagramInfo(instaUserId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -189,4 +191,6 @@ public class FacebookLogInManager {
     public AccessToken getPageAccessToken() {
         return pageAccessToken;
     }
+
+    public String getInstaUserId() { return instaUserId; }
 }

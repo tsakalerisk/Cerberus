@@ -23,6 +23,7 @@ public class LogInActivity extends AppCompatActivity {
     public static final String TAG_TWITTER = "Twitter";
     public static final String FB_USER_TOKEN_LITERAL = "FB_USER_TOKEN";
     public static final String FB_PAGE_TOKEN_LITERAL = "FB_PAGE_TOKEN";
+    public static final String INSTA_USER_ID = "INSTA_USER_ID";
 
     public LoginButton fbLoginButton = null;
     public ImageView fbImage = null;
@@ -59,6 +60,7 @@ public class LogInActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, FeedActivity.class);
                 intent.putExtra(FB_USER_TOKEN_LITERAL, facebookLogInManager.getUserAccessToken());
                 intent.putExtra(FB_PAGE_TOKEN_LITERAL, facebookLogInManager.getPageAccessToken());
+                intent.putExtra(INSTA_USER_ID, facebookLogInManager.getInstaUserId());
                 startActivity(intent);
             }
             else {
