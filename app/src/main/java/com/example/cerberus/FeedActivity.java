@@ -1,9 +1,11 @@
 package com.example.cerberus;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -53,8 +55,8 @@ public class FeedActivity extends AppCompatActivity {
     public PhotoInfo loadedPhotoInfo = null;
 
     private FacebookPostManager facebookPostManager;
-    public TweetManager tweetManager;
-    public InstagramPostManager instagramPostManager;
+    private TweetManager tweetManager;
+    private InstagramPostManager instagramPostManager;
 
     public static final String TAG = "TAG";
     public static final boolean DISABLE_POST = false;
@@ -145,17 +147,29 @@ public class FeedActivity extends AppCompatActivity {
         });
     }
 
+    private void clearPostViews() {
+        hideKeyboard();
+        postTextView.setText("");
+        deletePhoto();
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(FeedActivity.this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     private void alert(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(FeedActivity.this);
         builder.setMessage(message)
                 .setPositiveButton("OK", null)
                 .create()
                 .show();
-    }
-
-    private void clearPostViews() {
-        postTextView.setText("");
-        deletePhoto();
     }
 
     private void deletePhoto() {

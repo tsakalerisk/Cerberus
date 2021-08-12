@@ -19,6 +19,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -55,13 +56,11 @@ public class InstagramPostManager {
     public void post() {
         text = feedActivity.postTextView.getText().toString();
         bitmap = feedActivity.loadedPhotoInfo.bitmap;
-        bitmap = bitmap.copy(bitmap.getConfig(), true);
         bitmap = createSquaredBitmap(bitmap);
 
         new Thread(() -> {
             final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .readTimeout(90, TimeUnit.SECONDS)
-                    .connectTimeout(90, TimeUnit.SECONDS)
+                    .writeTimeout(90, TimeUnit.SECONDS)
                     .build();
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -102,7 +101,6 @@ public class InstagramPostManager {
                 (dim - srcBmp.getHeight()) >> 1,
                 null);
 
-        srcBmp.recycle();
         return dstBmp;
     }
 
