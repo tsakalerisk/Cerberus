@@ -16,7 +16,6 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.tweetui.TweetView;
 
 import java.util.List;
 
@@ -44,10 +43,6 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             }
         });
     }
-
-    /*public TimelineAdapter(List<Tweet> postList) {
-        setData(postList);
-    }*/
 
     @SuppressLint("NotifyDataSetChanged")
     public void setData(List<Tweet> postList) {
@@ -79,13 +74,12 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            //itemView.setOnClickListener(v -> {});
             ViewGroup layout = itemView.findViewById(R.id.layout);
             tweetView = new CustomTweetView(itemView.getContext(), (Tweet) null, R.style.tw__TweetLightWithActionsStyle);
             layout.addView(tweetView);
         }
 
-        public TweetView getTweetView() {
+        public CustomTweetView getTweetView() {
             return tweetView;
         }
     }

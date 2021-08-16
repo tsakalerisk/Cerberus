@@ -15,9 +15,9 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cerberus.Modules.CustomLinearLayoutManager;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
@@ -78,10 +78,8 @@ public class FeedActivity extends AppCompatActivity {
         tweetManager = new TweetManager(FeedActivity.this);
         instagramPostManager = new InstagramPostManager(FeedActivity.this);
 
-        TimelineAdapter timelineAdapter = new TimelineAdapter(this);
-        timelineRecyclerView.setAdapter(timelineAdapter);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(FeedActivity.this);
-        timelineRecyclerView.setLayoutManager(layoutManager);
+        timelineRecyclerView.setAdapter(new TimelineAdapter(this));
+        timelineRecyclerView.setLayoutManager(new CustomLinearLayoutManager(FeedActivity.this));
 
         TimelineAnimationManager.init(FeedActivity.this, timelineRecyclerView);
     }

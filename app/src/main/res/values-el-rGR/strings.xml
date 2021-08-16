@@ -15,4 +15,6 @@
     <string name="logged_in_as">"Έχετε συνδεθεί ως: "</string>
     <string name="cancel">Ακύρωση</string>
     <string name="search">Αναζήτηση</string>
+    <string name="post_reply">Γράψτε μία απάντηση…</string>
+    <string name="reply_posted">Η απάντηση δημοσιεύτηκε!</string>
 </resources>

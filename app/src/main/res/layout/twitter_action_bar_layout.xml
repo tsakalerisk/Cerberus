@@ -4,8 +4,7 @@
     android:id="@+id/tw__tweet_action_bar"
     style="@style/tw__TweetFillWidth"
     android:orientation="horizontal"
-    android:visibility="visible"
-    tools:visibility="visible">
+    android:visibility="visible">
 
     <ImageButton
         android:id="@+id/button_reply"

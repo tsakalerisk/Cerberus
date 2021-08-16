@@ -289,4 +289,41 @@
         tools:ignore="SpeakableTextPresentCheck"
         tools:visibility="visible" />
 
+    <LinearLayout
+        android:id="@+id/replyLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_fill"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <EditText
+            android:id="@+id/replyEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="@string/post_reply"
+            android:imeOptions="actionSend"
+            android:maxLength="280"
+            android:maxLines="6"
+            android:minHeight="48dp"
+            android:padding="8dp" />
+
+        <ImageButton
+            android:id="@+id/replySendButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:background="@android:color/transparent"
+            android:src="@drawable/post"
+            app:tint="?attr/colorPrimary"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
