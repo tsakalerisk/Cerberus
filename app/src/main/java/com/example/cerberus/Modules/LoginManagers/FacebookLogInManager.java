@@ -147,14 +147,13 @@ public class FacebookLogInManager {
                 if (currentAccessToken == null) {
                     Log.d(TAG_FACEBOOK, "Logged out");
 
-                    //Ew, hardcoded strings
-                    logInActivity.fbName.setText("Δεν είστε συνδεδεμένοι");
+                    logInActivity.fbName.setText(logInActivity.getResources().getString(R.string.not_logged_in));
                     logInActivity.fbImage.setImageResource(R.drawable.user_icon);
 
-                    logInActivity.fbPageName.setText("Δεν συνδέθηκε σελίδα");
+                    logInActivity.fbPageName.setText(logInActivity.getResources().getString(R.string.no_page_connected));
                     logInActivity.fbPageImage.setImageResource(R.drawable.page_icon);
 
-                    logInActivity.instaName.setText("Δεν είστε συνδεδεμένοι");
+                    logInActivity.instaName.setText(logInActivity.getResources().getString(R.string.not_logged_in));
                     logInActivity.instaUsername.setText("");
                     logInActivity.instaImage.setImageResource(R.drawable.user_icon);
                 }

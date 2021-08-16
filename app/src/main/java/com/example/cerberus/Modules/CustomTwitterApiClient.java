@@ -3,11 +3,8 @@ package com.example.cerberus.Modules;
 import com.example.cerberus.TwitterServices.SearchHashtagsService;
 import com.example.cerberus.TwitterServices.TrendsService;
 import com.twitter.sdk.android.core.TwitterApiClient;
-import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.internal.network.OkHttpClientHelper;
 
-import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -25,4 +22,15 @@ public class CustomTwitterApiClient extends TwitterApiClient {
                 .addConverterFactory(GsonConverterFactory.create()).build();
         return retrofit.create(SearchHashtagsService.class);
     }
+
+    /*public CustomTimelineService getCustomTimelineService() {
+        Gson gson = new GsonBuilder().registerTypeAdapter(CustomTweet.class, new CustomTweet.CustomTweetDeserializer()).create();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.twitter.com/")
+                .client(OkHttpClientHelper.getOkHttpClient(
+                        TwitterCore.getInstance().getSessionManager().getActiveSession(),
+                        TwitterCore.getInstance().getAuthConfig()))
+                .addConverterFactory(GsonConverterFactory.create(gson)).build();
+        return retrofit.create(CustomTimelineService.class);
+        //return getService(CustomTimelineService.class);
+    }*/
 }

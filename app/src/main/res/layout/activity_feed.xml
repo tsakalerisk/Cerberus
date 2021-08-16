@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:twittersdk="http://schemas.android.com/apk/res-auto"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/tw__blue_default"
-    android:foregroundTint="#FFFFFF"
+    android:orientation="vertical"
     tools:context=".FeedActivity">
 
     <SearchView
         android:id="@+id/searchView"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
@@ -21,7 +18,7 @@
         android:background="@drawable/border"
         android:iconifiedByDefault="false"
         android:orientation="horizontal"
-        android:queryHint="Αναζήτηση"
+        android:queryHint="@string/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +26,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/postLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
@@ -46,10 +43,11 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:autofillHints="no"
             android:background="@android:color/transparent"
             android:ems="10"
             android:gravity="start|top"
-            android:hint="Κάντε μια δημοσίευση..."
+            android:hint="@string/post_text_view_hint"
             android:inputType="textMultiLine"
             android:maxLines="12"
             android:minLines="4"
@@ -70,9 +68,9 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="Facebook"
-            android:textSize="12sp"
+            android:text="@string/facebook"
             android:textAllCaps="false"
+            android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/postTextView"
             app:postToggleColor="@color/com_facebook_blue"
@@ -91,9 +89,9 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="Twitter"
-            android:textSize="12sp"
+            android:text="@string/twitter"
             android:textAllCaps="false"
+            android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/instaPostToggle"
             app:layout_constraintStart_toEndOf="@+id/fbPostToggle"
             app:layout_constraintTop_toBottomOf="@+id/postTextView"
@@ -112,9 +110,9 @@
             android:paddingTop="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="10dp"
-            android:text="Instagram"
-            android:textSize="12sp"
+            android:text="@string/instagram"
             android:textAllCaps="false"
+            android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/postTextView"
             app:postToggleColor="@color/instagram_pink"
@@ -132,14 +130,13 @@
             android:backgroundTint="@color/purple_500"
             android:backgroundTintMode="add"
             android:breakStrategy="simple"
-            android:drawableRight="@drawable/photo"
+            android:drawableEnd="@drawable/photo"
             android:drawableTint="@color/purple_500"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Φωτο"
+            android:text="@string/add_photo_button_text"
             android:textColor="@color/purple_500"
             android:textSize="14sp"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/postButton"
             app:layout_constraintStart_toStartOf="parent"
@@ -155,12 +152,12 @@
             android:background="@drawable/button_fill"
             android:backgroundTint="@color/purple_500"
             android:backgroundTintMode="add"
-            android:drawableRight="@drawable/post"
+            android:drawableEnd="@drawable/post"
             android:drawableTint="@color/white"
             android:enabled="false"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            android:text="Δημοσίευση"
+            android:text="@string/post_button_text"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -180,30 +177,17 @@
             app:layout_constraintStart_toStartOf="@+id/addPhotoButton"
             app:layout_constraintTop_toTopOf="@+id/addPhotoButton">
 
-            <FrameLayout
-                android:id="@+id/photoLayout"
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/photoImageView"
                 android:layout_width="40dp"
                 android:layout_height="0dp"
                 android:layout_margin="5dp"
+                app:roundPercent="0.5"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/photoImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/page_icon" />
-
-                <ImageView
-                    android:id="@+id/photoFilter"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    app:srcCompat="@drawable/rounded_filter" />
-
-            </FrameLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
 
 
             <TextView
@@ -214,17 +198,17 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="24dp"
                 android:layout_toStartOf="@+id/deletePhotoButton"
-                android:layout_toEndOf="@+id/photoLayout"
+                android:layout_toEndOf="@+id/photoImageView"
                 android:layout_weight="0.5"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:lines="1"
-                android:text="TextView"
+                android:text=""
                 android:textColor="@color/purple_500"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/photoLayout"
+                app:layout_constraintStart_toEndOf="@+id/photoImageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
@@ -235,13 +219,12 @@
                 android:layout_alignParentEnd="true"
                 android:layout_weight="1"
                 android:backgroundTint="@color/transparent"
-                android:drawableRight="@drawable/close"
+                android:drawableEnd="@drawable/close"
                 android:drawableTint="@color/purple_500"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
                 android:textColor="@color/purple_500"
                 android:textSize="14sp"
-                android:visibility="visible"
                 app:icon="@drawable/close"
                 app:iconTint="@color/purple_500"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -252,17 +235,58 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.twitter.sdk.android.tweetui.TweetView
-        android:id="@+id/tweetView"
-        style="@style/tw__TweetLightWithActionsStyle"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/timelineLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="-8dp"
+        android:background="@drawable/border_fill"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/postLayout"
-        twittersdk:tw__tweet_id="510908133917487104" />
+        app:layout_constraintTop_toBottomOf="@+id/postLayout">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/timelineRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:nestedScrollingEnabled="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/scrollUpButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:clickable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/arrow_up"
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

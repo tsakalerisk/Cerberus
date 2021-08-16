@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="retweeted" type="id"/>
+    <item name="favorited" type="id"/>
+</resources>

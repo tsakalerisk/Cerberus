@@ -65,8 +65,8 @@ public class LogInActivity extends AppCompatActivity {
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("Συνδεθείτε για να προχωρήσετε.")
-                        .setPositiveButton("OK", null)
+                builder.setMessage(R.string.login_to_continue)
+                        .setPositiveButton(R.string.ok, null)
                         .create().show();
             }
         });

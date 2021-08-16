@@ -53,13 +53,11 @@ public class TwitterLogInManager {
             if (AUTO_LOG_OUT) {
                 logOut();
                 setLogOutVisibility(false);
-            }
-            else {
+            } else {
                 setLogOutVisibility(true);
                 requestUserInfo();
             }
-        }
-        else
+        } else
             setLogOutVisibility(false);
     }
 
@@ -80,17 +78,17 @@ public class TwitterLogInManager {
         });
         logInActivity.twLogOutButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(logInActivity);
-            builder.setMessage("Έχετε συνδεθεί ως: " + logInActivity.twName.getText())
+            builder.setMessage(logInActivity.getResources().getString(R.string.logged_in_as) + logInActivity.twName.getText())
                     .setCancelable(true)
-                    .setPositiveButton("ΑΠΟΣΥΝΔΕΣΗ", (dialog, which) -> logOutAndClearViews())
-                    .setNegativeButton("ΑΚΥΡΩΣΗ", null)
+                    .setPositiveButton(logInActivity.getResources().getString(R.string.log_out), (dialog, which) -> logOutAndClearViews())
+                    .setNegativeButton(logInActivity.getResources().getString(R.string.cancel), null)
                     .create().show();
         });
     }
 
     private void logOutAndClearViews() {
         logOut();
-        logInActivity.twName.setText("Δεν είστε συνδεδεμένοι");
+        logInActivity.twName.setText(logInActivity.getResources().getString(R.string.not_logged_in));
         logInActivity.twScreenName.setText("");
         logInActivity.twImage.setImageResource(R.drawable.user_icon);
         setLogOutVisibility(false);
@@ -105,7 +103,8 @@ public class TwitterLogInManager {
     }
 
     private void logOut() {
-        CookieManager.getInstance().removeSessionCookies(value -> {});
+        CookieManager.getInstance().removeSessionCookies(value -> {
+        });
         TwitterCore.getInstance().getSessionManager().clearActiveSession();
         Log.d(TAG_TWITTER, String.valueOf(isLoggedIn()));
     }
@@ -127,7 +126,8 @@ public class TwitterLogInManager {
             }
 
             @Override
-            public void failure(TwitterException exception) { }
+            public void failure(TwitterException exception) {
+            }
         });
     }
 

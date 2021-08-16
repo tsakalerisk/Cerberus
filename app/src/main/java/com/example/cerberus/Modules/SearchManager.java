@@ -55,7 +55,7 @@ public class SearchManager {
         //Set trend adapter
         final String[] from = new String[] {TREND_NAME_LITERAL, TWEET_NUM_LITERAL};
         final int[] to = new int[] {R.id.trendName, R.id.tweetNum};
-        trendAdapter = new TrendCursorAdapter(feedActivity,
+        trendAdapter = new SearchViewCursorAdapter(feedActivity,
                 R.layout.trend_layout,
                 null,
                 from,
@@ -67,7 +67,7 @@ public class SearchManager {
         //Set search adapter
         final String[] from2 = new String[] {RESULT_NAME_LITERAL};
         final int[] to2 = new int[] {R.id.resultName};
-        searchAdapter = new TrendCursorAdapter(feedActivity,
+        searchAdapter = new SearchViewCursorAdapter(feedActivity,
                 R.layout.search_layout,
                 null,
                 from2,

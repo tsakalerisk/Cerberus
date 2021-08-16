@@ -3,11 +3,11 @@ package com.example.cerberus;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -15,27 +15,22 @@ import android.widget.ToggleButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cerberus.Modules.CustomTwitterApiClient;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.example.cerberus.Modules.PostManagers.FacebookPostManager;
 import com.example.cerberus.Modules.PostManagers.InstagramPostManager;
+import com.example.cerberus.Modules.PostManagers.TweetManager;
 import com.example.cerberus.Modules.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
-import com.example.cerberus.Modules.PostManagers.TweetManager;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
+import com.example.cerberus.Modules.TimelineAdapter;
+import com.example.cerberus.Modules.TimelineAnimationManager;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.tweetui.TweetView;
-
-import java.util.List;
-
-import retrofit2.Call;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -50,6 +45,8 @@ public class FeedActivity extends AppCompatActivity {
     private ImageView photoImageView = null;
     private TextView photoNameTextView = null;
     private Button deletePhotoButton = null;
+    private RecyclerView timelineRecyclerView = null;
+    public ProgressBar progressBar = null;
 
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     public PhotoInfo loadedPhotoInfo = null;
@@ -81,24 +78,12 @@ public class FeedActivity extends AppCompatActivity {
         tweetManager = new TweetManager(FeedActivity.this);
         instagramPostManager = new InstagramPostManager(FeedActivity.this);
 
-        //Get first tweet
-        Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService().homeTimeline(null,
-                null, null, null, null, null, null);
-        getTimeline.enqueue(new Callback<List<Tweet>>() {
-            @Override
-            public void success(Result<List<Tweet>> result) {
-                TweetView tweetView = findViewById(R.id.tweetView);
-                tweetView.setTweet(result.data.get(0));
-                //Stop view from opening Twitter on click
-                tweetView.setOnClickListener(v -> {});
-            }
+        TimelineAdapter timelineAdapter = new TimelineAdapter(this);
+        timelineRecyclerView.setAdapter(timelineAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(FeedActivity.this);
+        timelineRecyclerView.setLayoutManager(layoutManager);
 
-            @Override
-            public void failure(TwitterException exception) {
-                Log.d(TAG, "Failed getting first tweet");
-                exception.printStackTrace();
-            }
-        });
+        TimelineAnimationManager.init(FeedActivity.this, timelineRecyclerView);
     }
 
     private void findAllViews() {
@@ -113,6 +98,8 @@ public class FeedActivity extends AppCompatActivity {
         photoImageView = findViewById(R.id.photoImageView);
         photoNameTextView = findViewById(R.id.photoName);
         deletePhotoButton = findViewById(R.id.deletePhotoButton);
+        timelineRecyclerView = findViewById(R.id.timelineRecyclerView);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     private void setUpButtonListeners() {
@@ -127,7 +114,7 @@ public class FeedActivity extends AppCompatActivity {
         postButton.setOnClickListener(v -> {
             if (!DISABLE_POST) {
                 if (instaPostToggle.isChecked() && loadedPhotoInfo == null) {
-                    alert("Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.");
+                    alert(getResources().getString(R.string.choose_instagram_image));
                 }
                 else {
                     if (fbPostToggle.isChecked()) {
@@ -143,7 +130,7 @@ public class FeedActivity extends AppCompatActivity {
                 }
             }
             else
-                alert("Οι δημοσιεύσεις είναι απενεργοποιημένες.");
+                alert(getResources().getString(R.string.posts_disabled));
         });
     }
 
@@ -167,7 +154,7 @@ public class FeedActivity extends AppCompatActivity {
     private void alert(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(FeedActivity.this);
         builder.setMessage(message)
-                .setPositiveButton("OK", null)
+                .setPositiveButton(getResources().getString(R.string.ok), null)
                 .create()
                 .show();
     }

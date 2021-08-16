@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.example.cerberus.R;
 
-public class TrendCursorAdapter extends SimpleCursorAdapter {
-    public TrendCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
+public class SearchViewCursorAdapter extends SimpleCursorAdapter {
+    public SearchViewCursorAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
         super(context, layout, c, from, to, flags);
     }
 

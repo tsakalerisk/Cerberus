@@ -1,0 +1,83 @@
+<com.twitter.sdk.android.tweetui.TweetActionBarView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:twitter="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tw__tweet_action_bar"
+    style="@style/tw__TweetFillWidth"
+    android:orientation="horizontal"
+    android:visibility="visible"
+    tools:visibility="visible">
+
+    <ImageButton
+        android:id="@+id/button_reply"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/twitter_reply"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/text_replies"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-light"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/button_retweet"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/twitter_retweet"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/text_retweets"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-light"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp" />
+
+    <ImageButton
+        android:id="@+id/button_favorite"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/transparent"
+        android:scaleType="fitCenter"
+        android:src="@drawable/twitter_favorite"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/text_favorites"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="12dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-light"
+        android:gravity="start|center_vertical"
+        android:textSize="16sp" />
+
+</com.twitter.sdk.android.tweetui.TweetActionBarView>

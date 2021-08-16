@@ -76,7 +76,7 @@ public class PhotoLoader {
         return new PhotoInfo(photoPath);
     }
 
-    public class PhotoInfo {
+    public static class PhotoInfo {
         public Bitmap bitmap;
         public String path, name;
 

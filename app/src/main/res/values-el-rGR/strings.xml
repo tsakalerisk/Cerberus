@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="post_text_view_hint">Κάντε μια δημοσίευση…</string>
+    <string name="add_photo_button_text">Φωτο</string>
+    <string name="post_button_text">Δημοσίευση</string>
+    <string name="log_in">Σύνδεση</string>
+    <string name="not_logged_in">Δεν είστε συνδεδεμένοι</string>
+    <string name="no_page_connected">Δεν συνδέθηκε σελίδα</string>
+    <string name="log_out">Αποσύνδεση</string>
+    <string name="continue_">Συνέχεια</string>
+    <string name="login_to_continue">Συνδεθείτε για να προχωρήσετε.</string>
+    <string name="ok">OK</string>
+    <string name="choose_instagram_image">Επιλέξτε μία εικόνα για να ανεβάσετε στο Instagram.</string>
+    <string name="posts_disabled">Οι δημοσιεύσεις είναι απενεργοποιημένες.</string>
+    <string name="logged_in_as">"Έχετε συνδεθεί ως: "</string>
+    <string name="cancel">Ακύρωση</string>
+    <string name="search">Αναζήτηση</string>
+</resources>
