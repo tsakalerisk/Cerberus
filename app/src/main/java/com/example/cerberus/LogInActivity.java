@@ -1,7 +1,9 @@
 package com.example.cerberus;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 public class LogInActivity extends AppCompatActivity {
 
     public static final boolean AUTO_LOG_OUT = false;
+    public static final boolean AUTO_CONTINUE = false;
 
     public static final String TAG_FACEBOOK = "Facebook";
     public static final String TAG_TWITTER = "Twitter";
@@ -45,6 +48,8 @@ public class LogInActivity extends AppCompatActivity {
 
     private FacebookLogInManager facebookLogInManager = null;
     private TwitterLogInManager twitterLogInManager = null;
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +60,12 @@ public class LogInActivity extends AppCompatActivity {
         findAllViews();
         facebookLogInManager = new FacebookLogInManager(this);
         twitterLogInManager.init();
+        if (AUTO_CONTINUE && facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
+            continueToFeed();
+        }
         buttonNext.setOnClickListener(v -> {
             if (facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
-                Intent intent = new Intent(this, FeedActivity.class);
-                intent.putExtra(FB_USER_TOKEN_LITERAL, facebookLogInManager.getUserAccessToken());
-                intent.putExtra(FB_PAGE_TOKEN_LITERAL, facebookLogInManager.getPageAccessToken());
-                intent.putExtra(INSTA_USER_ID, facebookLogInManager.getInstaUserId());
-                startActivity(intent);
+                continueToFeed();
             }
             else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -70,6 +74,37 @@ public class LogInActivity extends AppCompatActivity {
                         .create().show();
             }
         });
+        checkForNetwork();
+    }
+
+    private void checkForNetwork() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getActiveNetworkInfo() == null) {
+            Intent intent = new Intent(this, NoInternetActivity.class);
+            intent.putExtra(NetworkCallback.ACTIVITY_FROM, getClass());
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        networkCallback = new NetworkCallback(this);
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
+    }
+
+    private void continueToFeed() {
+        Intent intent = new Intent(this, FeedActivity.class);
+        intent.putExtra(FB_USER_TOKEN_LITERAL, facebookLogInManager.getUserAccessToken());
+        intent.putExtra(FB_PAGE_TOKEN_LITERAL, facebookLogInManager.getPageAccessToken());
+        intent.putExtra(INSTA_USER_ID, facebookLogInManager.getInstaUserId());
+        startActivity(intent);
     }
 
     protected void findAllViews() {
@@ -103,5 +138,10 @@ public class LogInActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         facebookLogInManager.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 }

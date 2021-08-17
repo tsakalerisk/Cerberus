@@ -101,7 +101,7 @@ public class FacebookLogInManager {
             Picasso.with(logInActivity).load(imageUrl).into(logInActivity.fbPageImage);
             instaUserId = pageData.getJSONObject("instagram_business_account").getString("id");
             requestInstagramInfo(instaUserId);
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }
@@ -135,7 +135,7 @@ public class FacebookLogInManager {
             logInActivity.fbName.setText(full_name);
             String imageUrl = object.getJSONObject("picture").getJSONObject("data").getString("url");
             Picasso.with(logInActivity).load(imageUrl).into(logInActivity.fbImage);
-        } catch (JSONException e) {
+        } catch (JSONException | NullPointerException e) {
             e.printStackTrace();
         }
     }

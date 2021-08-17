@@ -1,4 +1,4 @@
-package com.example.cerberus.Modules;
+package com.example.cerberus.Modules.Adapters;
 
 import android.annotation.SuppressLint;
 import android.util.Log;
@@ -7,9 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cerberus.FeedActivity;
+import com.example.cerberus.Modules.CustomViews.CustomTweetView;
 import com.example.cerberus.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -26,6 +28,10 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
     private static final String TAG = "TAG";
 
     public TimelineAdapter(FeedActivity feedActivity) {
+        getData(feedActivity, null);
+    }
+
+    public void getData(FeedActivity feedActivity, @Nullable Callback<Object> callback) {
         Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService().homeTimeline(200,
                 null, null, null, null, null, null);
         getTimeline.enqueue(new Callback<List<Tweet>>() {
@@ -34,12 +40,18 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
             public void success(Result<List<Tweet>> result) {
                 setData(result.data);
                 feedActivity.progressBar.setVisibility(View.GONE);
+                if (callback != null) {
+                    callback.success(null);
+                }
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Log.d(TAG, "Failed getting tweet timeline");
                 exception.printStackTrace();
+                if (callback != null) {
+                    callback.failure(exception);
+                }
             }
         });
     }

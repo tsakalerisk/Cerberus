@@ -1,4 +1,4 @@
-package com.example.cerberus.Modules;
+package com.example.cerberus.Modules.CustomViews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

@@ -23,15 +23,9 @@ android {
     }
 
     buildTypes.each {
-        it.buildConfigField 'String', 'FacebookAppId', FACEBOOK_APP_ID
-        it.buildConfigField 'String', 'FbLoginProtocolScheme', FB_LOGIN_PROTOCOL_SCHEME
         it.buildConfigField 'String', 'TwitterApiKey', TWITTER_API_KEY
         it.buildConfigField 'String', 'TwitterApiKeySecret', TWITTER_API_KEY_SECRET
-        it.buildConfigField 'String', 'TwitterAccessToken', TWITTER_ACCESS_TOKEN //not used
-        it.buildConfigField 'String', 'TwitterAccessTokenSecret', TWITTER_ACCESS_TOKEN_SECRET //not used
         it.buildConfigField 'String', 'ImgurClientId', IMGUR_CLIENT_ID
-        it.buildConfigField 'String', 'ImgurClientSecret', IMGUR_CLIENT_SECRET
-
     }
 
     compileOptions {
@@ -52,7 +46,7 @@ dependencies {
 
     implementation 'com.facebook.android:facebook-login:[8.1)'
     implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
-    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.squareup.picasso:picasso:2.5.2' //Old version to be compatible with TwitterKit
     implementation "androidx.browser:browser:1.3.0"
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

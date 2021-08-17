@@ -2,6 +2,9 @@ package com.example.cerberus;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cerberus.Modules.CustomLinearLayoutManager;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
@@ -24,13 +28,17 @@ import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.example.cerberus.Modules.PostManagers.FacebookPostManager;
 import com.example.cerberus.Modules.PostManagers.InstagramPostManager;
 import com.example.cerberus.Modules.PostManagers.TweetManager;
-import com.example.cerberus.Modules.PostToggleButton;
+import com.example.cerberus.Modules.CustomViews.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
-import com.example.cerberus.Modules.TimelineAdapter;
+import com.example.cerberus.Modules.Adapters.TimelineAdapter;
 import com.example.cerberus.Modules.TimelineAnimationManager;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -47,6 +55,7 @@ public class FeedActivity extends AppCompatActivity {
     private Button deletePhotoButton = null;
     private RecyclerView timelineRecyclerView = null;
     public ProgressBar progressBar = null;
+    private SwipeRefreshLayout swipeLayout = null;
 
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     public PhotoInfo loadedPhotoInfo = null;
@@ -57,6 +66,8 @@ public class FeedActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
     public static final boolean DISABLE_POST = false;
+    private ConnectivityManager connectivityManager;
+    private NetworkCallback networkCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +93,22 @@ public class FeedActivity extends AppCompatActivity {
         timelineRecyclerView.setLayoutManager(new CustomLinearLayoutManager(FeedActivity.this));
 
         TimelineAnimationManager.init(FeedActivity.this, timelineRecyclerView);
+        swipeLayout.setOnRefreshListener(() -> {
+            TimelineAdapter adapter = (TimelineAdapter) timelineRecyclerView.getAdapter();
+            if (adapter != null)
+                adapter.getData(FeedActivity.this, new Callback<Object>() {
+                    @Override
+                    public void success(Result result) {
+                        swipeLayout.setRefreshing(false);
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        swipeLayout.setRefreshing(false);
+                    }
+                });
+        });
+        checkForNetwork();
     }
 
     private void findAllViews() {
@@ -98,6 +125,7 @@ public class FeedActivity extends AppCompatActivity {
         deletePhotoButton = findViewById(R.id.deletePhotoButton);
         timelineRecyclerView = findViewById(R.id.timelineRecyclerView);
         progressBar = findViewById(R.id.progressBar);
+        swipeLayout = findViewById(R.id.swipeLayout);
     }
 
     private void setUpButtonListeners() {
@@ -130,6 +158,19 @@ public class FeedActivity extends AppCompatActivity {
             else
                 alert(getResources().getString(R.string.posts_disabled));
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        networkCallback = new NetworkCallback(this);
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
     }
 
     private void clearPostViews() {
@@ -182,5 +223,14 @@ public class FeedActivity extends AppCompatActivity {
         loadedPhotoInfo = photoInfo;
         photoImageView.setImageBitmap(loadedPhotoInfo.bitmap);
         photoNameTextView.setText(loadedPhotoInfo.name);
+    }
+
+    private void checkForNetwork() {
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getActiveNetworkInfo() == null) {
+            Intent intent = new Intent(this, NoInternetActivity.class);
+            intent.putExtra(NetworkCallback.ACTIVITY_FROM, getClass());
+            startActivity(intent);
+        }
     }
 }

@@ -1,9 +1,8 @@
-package com.example.cerberus.Modules;
+package com.example.cerberus.Modules.Adapters;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 

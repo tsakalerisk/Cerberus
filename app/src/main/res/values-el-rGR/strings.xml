@@ -17,4 +17,6 @@
     <string name="search">Αναζήτηση</string>
     <string name="post_reply">Γράψτε μία απάντηση…</string>
     <string name="reply_posted">Η απάντηση δημοσιεύτηκε!</string>
+    <string name="youre_offline">Είστε εκτός σύνδεσης</string>
+    <string name="check_your_connection">Ελέγξετε τη σύνδεσή σας</string>
 </resources>

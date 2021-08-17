@@ -1,4 +1,4 @@
-package com.example.cerberus.Modules;
+package com.example.cerberus.Modules.CustomViews;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +19,7 @@ import androidx.constraintlayout.utils.widget.ImageFilterView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.cerberus.Modules.CustomLinearLayoutManager;
 import com.example.cerberus.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;

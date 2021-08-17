@@ -11,6 +11,7 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.cerberus.FeedActivity;
+import com.example.cerberus.Modules.Adapters.SearchViewCursorAdapter;
 import com.example.cerberus.R;
 import com.example.cerberus.TwitterServices.Responses.SearchResponse;
 import com.example.cerberus.TwitterServices.Responses.TrendResponse;

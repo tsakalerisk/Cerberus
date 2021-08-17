@@ -22,33 +22,33 @@ public class TimelineAnimationManager {
     private static FloatingActionButton scrollUpButton = null;
 
     public static void init(FeedActivity feedActivity, RecyclerView timelineRecyclerView) {
-        ConstraintLayout parent = (ConstraintLayout) timelineRecyclerView.getParent();
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) parent.getLayoutParams();
+        ConstraintLayout layout = feedActivity.findViewById(R.id.timelineLayout);
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) layout.getLayoutParams();
         LinearLayoutManager layoutManager = (LinearLayoutManager) timelineRecyclerView.getLayoutManager();
 
         animatorSet = new AnimatorSet();
         ValueAnimator leftMarginAnimation = ValueAnimator.ofInt(layoutParams.leftMargin, 0);
         leftMarginAnimation.addUpdateListener(animation -> {
             layoutParams.leftMargin = (Integer) animation.getAnimatedValue();
-            parent.setLayoutParams(layoutParams);
+            layout.setLayoutParams(layoutParams);
         });
         ValueAnimator rightMarginAnimation = ValueAnimator.ofInt(layoutParams.rightMargin, 0);
         rightMarginAnimation.addUpdateListener(animation -> {
             layoutParams.rightMargin = (Integer) animation.getAnimatedValue();
-            parent.setLayoutParams(layoutParams);
+            layout.setLayoutParams(layoutParams);
         });
 
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        layout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                ValueAnimator topMarginAnimation = ValueAnimator.ofInt(layoutParams.topMargin, (int) -parent.getY());
+                ValueAnimator topMarginAnimation = ValueAnimator.ofInt(layoutParams.topMargin, (int) -layout.getY());
                 topMarginAnimation.addUpdateListener(animation -> {
                     layoutParams.topMargin = (Integer) animation.getAnimatedValue();
-                    parent.setLayoutParams(layoutParams);
+                    layout.setLayoutParams(layoutParams);
                 });
                 animatorSet.play(topMarginAnimation).with(leftMarginAnimation).with(rightMarginAnimation);
                 topMarginAnimation.setDuration(500);
-                parent.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                layout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
 
