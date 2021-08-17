@@ -54,6 +54,8 @@ public class CustomTweetView extends TweetView {
     private RecyclerView recyclerView;
     private CustomLinearLayoutManager recyclerViewLayoutManager;
 
+    public static final boolean DISABLE_APP_PERMALINK = true;
+
     public CustomTweetView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -99,6 +101,9 @@ public class CustomTweetView extends TweetView {
     @Override
     public void setTweet(Tweet tweet) {
         super.setTweet(tweet);
+        if (DISABLE_APP_PERMALINK) {
+            setOnClickListener(null);
+        }
         String url;
         if (tweet != null) {
             displayTweet = getDisplayTweet();
