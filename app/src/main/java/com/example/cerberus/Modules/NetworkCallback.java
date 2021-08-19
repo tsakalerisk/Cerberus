@@ -1,4 +1,4 @@
-package com.example.cerberus;
+package com.example.cerberus.Modules;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.net.Network;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+
+import com.example.cerberus.NoInternetActivity;
 
 import java.io.Serializable;
 
@@ -29,6 +31,8 @@ public class NetworkCallback extends ConnectivityManager.NetworkCallback {
     public void onAvailable(@NonNull Network network) {
         if (activityTo != null) {
             Intent intent = new Intent(activityFrom, activityTo);
+            //Give the access tokens back to the activity
+            intent.putExtras(activityFrom.getIntent().getExtras());
             activityFrom.startActivity(intent);
         }
     }

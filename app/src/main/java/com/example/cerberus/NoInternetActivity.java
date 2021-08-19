@@ -2,10 +2,11 @@ package com.example.cerberus;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+
+import com.example.cerberus.Modules.NetworkCallback;
 
 public class NoInternetActivity extends AppCompatActivity {
     private ConnectivityManager connectivityManager;

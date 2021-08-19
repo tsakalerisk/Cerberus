@@ -16,8 +16,15 @@
         android:theme="@style/Theme.Cerberus"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".SearchPostsActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".NoInternetActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".FeedActivity"
             android:exported="true"
@@ -55,7 +62,8 @@
             android:value="false" />
         <meta-data
             android:name="com.facebook.sdk.AdvertiserIDCollectionEnabled"
-            android:value="false" /> <!--  -->
+            android:value="false" />
+
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

@@ -13,45 +13,62 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.Modules.CustomViews.CustomTweetView;
 import com.example.cerberus.R;
+import com.example.cerberus.TwitterSearchFragment;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.Search;
 import com.twitter.sdk.android.core.models.Tweet;
 
 import java.util.List;
 
 import retrofit2.Call;
 
-public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHolder> {
+public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
+    public static final int MAX_SEARCH_TWEETS = 100;
+    public static final int MAX_TIMELINE_TWEETS = 200;
     private List<Tweet> postList;
     private static final String TAG = "TAG";
 
-    public TimelineAdapter(FeedActivity feedActivity) {
-        getData(feedActivity, null);
+    public void getSearchResults(TwitterSearchFragment twitterSearchFragment, String q) {
+        TwitterCore.getInstance().getApiClient().getSearchService().tweets(q, null,
+                null, null, null, MAX_SEARCH_TWEETS, null, null, null,
+                null).enqueue(new Callback<Search>() {
+            @Override
+            public void success(Result<Search> result) {
+                setData(result.data.tweets);
+                twitterSearchFragment.progressBar.setVisibility(View.GONE);
+                twitterSearchFragment.swipeLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d(TAG, "Failed searching tweets for: " + q);
+                exception.printStackTrace();
+                twitterSearchFragment.swipeLayout.setRefreshing(false);
+            }
+        });
     }
 
-    public void getData(FeedActivity feedActivity, @Nullable Callback<Object> callback) {
-        Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService().homeTimeline(200,
-                null, null, null, null, null, null);
+    public void getTimeline(FeedActivity feedActivity) {
+        Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService()
+                .homeTimeline(MAX_TIMELINE_TWEETS, null, null, null,
+                        null, null, null);
         getTimeline.enqueue(new Callback<List<Tweet>>() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void success(Result<List<Tweet>> result) {
                 setData(result.data);
                 feedActivity.progressBar.setVisibility(View.GONE);
-                if (callback != null) {
-                    callback.success(null);
-                }
+                feedActivity.swipeLayout.setRefreshing(false);
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Log.d(TAG, "Failed getting tweet timeline");
                 exception.printStackTrace();
-                if (callback != null) {
-                    callback.failure(exception);
-                }
+                feedActivity.swipeLayout.setRefreshing(false);
             }
         });
     }
@@ -64,14 +81,14 @@ public class TimelineAdapter extends RecyclerView.Adapter<TimelineAdapter.ViewHo
 
     @NonNull
     @Override
-    public TimelineAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TweetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.timeline_item_layout, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TimelineAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TweetAdapter.ViewHolder holder, int position) {
         //Log.d(TAG, "Binding timeline item number " + position);
         holder.getTweetView().setTweet(postList.get(position));
     }

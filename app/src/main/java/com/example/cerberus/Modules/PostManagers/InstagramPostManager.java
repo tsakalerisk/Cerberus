@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.cerberus.BuildConfig;
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.LogInActivity;
+import com.example.cerberus.R;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -76,7 +77,7 @@ public class InstagramPostManager {
                     if (id != null) {
                         if (publishPost(id)) {
                             feedActivity.runOnUiThread(() -> Toast.makeText(feedActivity,
-                                    "Posted on Instagram!",
+                                    feedActivity.getResources().getString(R.string.posted_on_instagram),
                                     Toast.LENGTH_SHORT)
                                     .show());
                         }

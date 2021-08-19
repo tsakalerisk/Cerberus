@@ -130,7 +130,7 @@ public class CustomTweetView extends TweetView {
             replyEditText = getRootView().findViewById(R.id.replyEditText);
             replySendButton = getRootView().findViewById(R.id.replySendButton);
             scrollUpButton = getRootView().findViewById(R.id.scrollUpButton);
-            recyclerView = getRootView().findViewById(R.id.timelineRecyclerView);
+            recyclerView = getRootView().findViewById(R.id.recyclerView);
             recyclerViewLayoutManager = (CustomLinearLayoutManager) recyclerView.getLayoutManager();
 
             int scrollUpButtonVisibility;

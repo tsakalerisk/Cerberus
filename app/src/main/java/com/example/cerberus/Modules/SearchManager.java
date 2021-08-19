@@ -1,5 +1,6 @@
 package com.example.cerberus.Modules;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.provider.BaseColumns;
@@ -13,8 +14,9 @@ import android.widget.SimpleCursorAdapter;
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.Modules.Adapters.SearchViewCursorAdapter;
 import com.example.cerberus.R;
-import com.example.cerberus.TwitterServices.Responses.SearchResponse;
-import com.example.cerberus.TwitterServices.Responses.TrendResponse;
+import com.example.cerberus.SearchPostsActivity;
+import com.example.cerberus.Modules.TwitterServices.Responses.SearchResponse;
+import com.example.cerberus.Modules.TwitterServices.Responses.TrendResponse;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -28,11 +30,12 @@ import retrofit2.Call;
 public class SearchManager {
     public static final int AREA_CODE_GREECE = 23424833;
     public static final int AREA_CODE_WORLD = 1;
-    public static final String TWITTER_TAG = "Twitter";
+    public static final String TAG = "TAG";
     public static final String TREND_NAME_LITERAL = "trendName";
     public static final String TWEET_NUM_LITERAL = "tweetNum";
     public static final int TREND_REQUEST_COOLDOWN_SECONDS = 300;
     private static final String RESULT_NAME_LITERAL = "ResultName";
+    public static final String QUERY_LITERAL = "QUERY";
 
     private static SimpleCursorAdapter trendAdapter;
     private static SimpleCursorAdapter searchAdapter;
@@ -102,6 +105,10 @@ public class SearchManager {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                Intent intent = new Intent(feedActivity, SearchPostsActivity.class);
+                intent.putExtra(QUERY_LITERAL, s);
+                intent.putExtras(feedActivity.getIntent().getExtras());
+                feedActivity.startActivity(intent);
                 return false;
             }
 
@@ -135,7 +142,7 @@ public class SearchManager {
 
             @Override
             public void failure(TwitterException exception) {
-                Log.d(TWITTER_TAG, "Failed getting trends");
+                Log.d(TAG, "Failed getting trends");
                 exception.printStackTrace();
             }
         });
@@ -161,7 +168,7 @@ public class SearchManager {
 
             @Override
             public void failure(TwitterException exception) {
-                Log.d(TWITTER_TAG, "Failed getting trends");
+                Log.d(TAG, "Failed getting trends");
                 exception.printStackTrace();
             }
         });

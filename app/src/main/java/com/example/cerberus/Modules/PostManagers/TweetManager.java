@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
+import com.example.cerberus.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -117,7 +118,7 @@ public class TweetManager {
             @Override
             public void success(Result<Tweet> result) {
                 Log.d(TAG, "Posted on Twitter successfully");
-                Toast.makeText(feedActivity, "Posted on Twitter!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(feedActivity, feedActivity.getResources().getString(R.string.posted_on_twitter), Toast.LENGTH_SHORT).show();
             }
 
             @Override

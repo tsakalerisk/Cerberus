@@ -90,6 +90,7 @@ public class TimelineAnimationManager {
         scrollUpButton = feedActivity.findViewById(R.id.scrollUpButton);
         scrollUpButton.setOnClickListener(v -> {
             timelineRecyclerView.scrollToPosition(0);
+            //timelineRecyclerView.smoothScrollToPosition(0);
             isAtTop = true;
             tryCollapse();
         });

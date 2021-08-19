@@ -1,4 +1,4 @@
-package com.example.cerberus.TwitterServices.Responses;
+package com.example.cerberus.Modules.TwitterServices.Responses;
 
 public class SearchResponse {
     public Integer num_results;

@@ -19,4 +19,8 @@
     <string name="reply_posted">Η απάντηση δημοσιεύτηκε!</string>
     <string name="youre_offline">Είστε εκτός σύνδεσης</string>
     <string name="check_your_connection">Ελέγξετε τη σύνδεσή σας</string>
+    <string name="posted_on_facebook">Δημοσιεύτηκε στο Facebook!</string>
+    <string name="posted_on_instagram">Δημοσιεύτηκε στο Instagram!</string>
+    <string name="posted_on_twitter">Δημοσιεύτηκε στο Twitter!</string>
+    <string name="facebook_no_support">Το Facebook δεν επιτρέπει αναζήτηση δημοσιεύσεων ακόμη.</string>
 </resources>

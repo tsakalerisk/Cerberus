@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.cerberus.Modules.LoginManagers.FacebookLogInManager;
 import com.example.cerberus.Modules.LoginManagers.TwitterLogInManager;
+import com.example.cerberus.Modules.NetworkCallback;
 import com.facebook.login.widget.LoginButton;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 

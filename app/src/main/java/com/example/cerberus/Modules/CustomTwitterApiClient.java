@@ -1,7 +1,7 @@
 package com.example.cerberus.Modules;
 
-import com.example.cerberus.TwitterServices.SearchHashtagsService;
-import com.example.cerberus.TwitterServices.TrendsService;
+import com.example.cerberus.Modules.TwitterServices.SearchHashtagsService;
+import com.example.cerberus.Modules.TwitterServices.TrendsService;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterSession;
 

@@ -23,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.cerberus.Modules.CustomLinearLayoutManager;
 import com.example.cerberus.Modules.CustomTwitterApiClient;
+import com.example.cerberus.Modules.NetworkCallback;
 import com.example.cerberus.Modules.PhotoLoader;
 import com.example.cerberus.Modules.PhotoLoader.PhotoInfo;
 import com.example.cerberus.Modules.PostManagers.FacebookPostManager;
@@ -30,15 +31,11 @@ import com.example.cerberus.Modules.PostManagers.InstagramPostManager;
 import com.example.cerberus.Modules.PostManagers.TweetManager;
 import com.example.cerberus.Modules.CustomViews.PostToggleButton;
 import com.example.cerberus.Modules.SearchManager;
-import com.example.cerberus.Modules.Adapters.TimelineAdapter;
+import com.example.cerberus.Modules.Adapters.TweetAdapter;
 import com.example.cerberus.Modules.TimelineAnimationManager;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.Tweet;
 
 public class FeedActivity extends AppCompatActivity {
 
@@ -55,7 +52,7 @@ public class FeedActivity extends AppCompatActivity {
     private Button deletePhotoButton = null;
     private RecyclerView timelineRecyclerView = null;
     public ProgressBar progressBar = null;
-    private SwipeRefreshLayout swipeLayout = null;
+    public SwipeRefreshLayout swipeLayout = null;
 
     private final PhotoLoader photoLoader = new PhotoLoader(this);
     public PhotoInfo loadedPhotoInfo = null;
@@ -89,25 +86,14 @@ public class FeedActivity extends AppCompatActivity {
         tweetManager = new TweetManager(FeedActivity.this);
         instagramPostManager = new InstagramPostManager(FeedActivity.this);
 
-        timelineRecyclerView.setAdapter(new TimelineAdapter(this));
+        TweetAdapter tweetAdapter = new TweetAdapter();
+        timelineRecyclerView.setAdapter(tweetAdapter);
+        tweetAdapter.getTimeline(FeedActivity.this);
         timelineRecyclerView.setLayoutManager(new CustomLinearLayoutManager(FeedActivity.this));
 
         TimelineAnimationManager.init(FeedActivity.this, timelineRecyclerView);
-        swipeLayout.setOnRefreshListener(() -> {
-            TimelineAdapter adapter = (TimelineAdapter) timelineRecyclerView.getAdapter();
-            if (adapter != null)
-                adapter.getData(FeedActivity.this, new Callback<Object>() {
-                    @Override
-                    public void success(Result result) {
-                        swipeLayout.setRefreshing(false);
-                    }
+        swipeLayout.setOnRefreshListener(() -> tweetAdapter.getTimeline(FeedActivity.this));
 
-                    @Override
-                    public void failure(TwitterException exception) {
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
-        });
         checkForNetwork();
     }
 
@@ -123,7 +109,7 @@ public class FeedActivity extends AppCompatActivity {
         photoImageView = findViewById(R.id.photoImageView);
         photoNameTextView = findViewById(R.id.photoName);
         deletePhotoButton = findViewById(R.id.deletePhotoButton);
-        timelineRecyclerView = findViewById(R.id.timelineRecyclerView);
+        timelineRecyclerView = findViewById(R.id.recyclerView);
         progressBar = findViewById(R.id.progressBar);
         swipeLayout = findViewById(R.id.swipeLayout);
     }
@@ -230,7 +216,13 @@ public class FeedActivity extends AppCompatActivity {
         if (connectivityManager.getActiveNetworkInfo() == null) {
             Intent intent = new Intent(this, NoInternetActivity.class);
             intent.putExtra(NetworkCallback.ACTIVITY_FROM, getClass());
+            intent.putExtras(getIntent().getExtras());
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 }

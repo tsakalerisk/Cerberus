@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.LogInActivity;
+import com.example.cerberus.R;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 
@@ -50,7 +51,7 @@ public class FacebookPostManager {
                     try {
                         if (response.getConnection().getResponseCode() == HttpURLConnection.HTTP_OK) {
                             Log.d(TAG, "Posted image on Facebook successfully.");
-                            Toast.makeText(feedActivity, "Posted on Facebook!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(feedActivity, feedActivity.getResources().getString(R.string.posted_on_facebook), Toast.LENGTH_SHORT).show();
                         } else
                             Log.d(TAG, "Failed to upload image on Facebook.");
                     } catch (IOException e) {
@@ -71,7 +72,7 @@ public class FacebookPostManager {
                         try {
                             if (response.getConnection().getResponseCode() == HttpURLConnection.HTTP_OK) {
                                 Log.d(TAG, "Posted text on Facebook successfully.");
-                                Toast.makeText(feedActivity, "Posted on Facebook!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(feedActivity, feedActivity.getResources().getString(R.string.posted_on_facebook), Toast.LENGTH_SHORT).show();
                             } else
                                 Log.d(TAG, "Failed to post text on Facebook.");
                         } catch (IOException e) {
