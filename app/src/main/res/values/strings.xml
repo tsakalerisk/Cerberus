@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Cerberus</string>
+    <string name="facebook_app_id" translatable="false">@string/FACEBOOK_APP_ID</string>
+    <string name="fb_login_protocol_scheme" translatable="false">@string/FB_LOGIN_PROTOCOL_SCHEME</string>
+    <string name="facebook" translatable="false">Facebook</string>
+    <string name="twitter" translatable="false">Twitter</string>
+    <string name="instagram" translatable="false">Instagram</string>
+    <string name="post_text_view_hint">Make a post…</string>
+    <string name="add_photo_button_text">Photo</string>
+    <string name="post_button_text">Post</string>
+    <string name="log_in">Log In</string>
+    <string name="not_logged_in">Not logged in</string>
+    <string name="no_page_connected">No connected page</string>
+    <string name="log_out">Log out</string>
+    <string name="continue_">Continue</string>
+    <string name="login_to_continue">Log in to continue</string>
+    <string name="ok">OK</string>
+    <string name="choose_instagram_image">Choose an image to upload to Instagram.</string>
+    <string name="posts_disabled">Posts are disabled.</string>
+    <string name="logged_in_as">"Logged in as: "</string>
+    <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="post_reply">Post a reply…</string>
+    <string name="reply_posted">Reply posted!</string>
+    <string name="youre_offline">You\'re offline</string>
+    <string name="check_your_connection">Check your connection</string>
+    <string name="posted_on_facebook">Posted on Facebook!</string>
+    <string name="posted_on_instagram">Posted on Instagram!</string>
+    <string name="posted_on_twitter">Posted on Twitter!</string>
+    <string name="facebook_no_support">Facebook does not support searching posts yet.</string>
+</resources>
