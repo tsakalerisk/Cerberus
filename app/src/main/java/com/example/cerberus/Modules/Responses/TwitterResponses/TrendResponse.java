@@ -1,4 +1,4 @@
-package com.example.cerberus.Modules.TwitterServices.Responses;
+package com.example.cerberus.Modules.Responses.TwitterResponses;
 
 public class TrendResponse {
     public Trend[] trends;

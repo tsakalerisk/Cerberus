@@ -29,4 +29,5 @@
     <string name="posted_on_instagram">Posted on Instagram!</string>
     <string name="posted_on_twitter">Posted on Twitter!</string>
     <string name="facebook_no_support">Facebook does not support searching posts yet.</string>
+    <string name="x_likes">%1$d likes</string>
 </resources>

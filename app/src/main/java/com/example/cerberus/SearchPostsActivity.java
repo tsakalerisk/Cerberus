@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -18,10 +18,19 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.cerberus.Fragments.FacebookSearchFragment;
+import com.example.cerberus.Fragments.InstagramSearchFragment;
+import com.example.cerberus.Fragments.TwitterSearchFragment;
 import com.example.cerberus.Modules.NetworkCallback;
 import com.example.cerberus.Modules.SearchManager;
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
 
 public class SearchPostsActivity extends AppCompatActivity {
     private Toolbar toolbar;
@@ -50,6 +59,7 @@ public class SearchPostsActivity extends AppCompatActivity {
         setUpTabs();
 
         checkForNetwork();
+
     }
 
     private class SearchPagerAdapter extends FragmentPagerAdapter {
@@ -69,7 +79,7 @@ public class SearchPostsActivity extends AppCompatActivity {
                     fragment = TwitterSearchFragment.newInstance(query);
                     break;
                 case 2:
-                    fragment = FacebookSearchFragment.newInstance();
+                    fragment = InstagramSearchFragment.newInstance(query);
                     break;
             }
             return fragment;

@@ -7,13 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cerberus.FeedActivity;
 import com.example.cerberus.Modules.CustomViews.CustomTweetView;
 import com.example.cerberus.R;
-import com.example.cerberus.TwitterSearchFragment;
+import com.example.cerberus.Fragments.TwitterSearchFragment;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -83,7 +82,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     @Override
     public TweetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.timeline_item_layout, parent, false);
+                .inflate(R.layout.tweet_layout, parent, false);
         return new ViewHolder(view);
     }
 

@@ -12,11 +12,11 @@ import android.widget.SearchView;
 import android.widget.SimpleCursorAdapter;
 
 import com.example.cerberus.FeedActivity;
-import com.example.cerberus.Modules.Adapters.SearchViewCursorAdapter;
+import com.example.cerberus.Modules.Adapters.SearchViewAdapter;
 import com.example.cerberus.R;
 import com.example.cerberus.SearchPostsActivity;
-import com.example.cerberus.Modules.TwitterServices.Responses.SearchResponse;
-import com.example.cerberus.Modules.TwitterServices.Responses.TrendResponse;
+import com.example.cerberus.Modules.Responses.TwitterResponses.SearchResponse;
+import com.example.cerberus.Modules.Responses.TwitterResponses.TrendResponse;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -59,7 +59,7 @@ public class SearchManager {
         //Set trend adapter
         final String[] from = new String[] {TREND_NAME_LITERAL, TWEET_NUM_LITERAL};
         final int[] to = new int[] {R.id.trendName, R.id.tweetNum};
-        trendAdapter = new SearchViewCursorAdapter(feedActivity,
+        trendAdapter = new SearchViewAdapter(feedActivity,
                 R.layout.trend_layout,
                 null,
                 from,
@@ -71,7 +71,7 @@ public class SearchManager {
         //Set search adapter
         final String[] from2 = new String[] {RESULT_NAME_LITERAL};
         final int[] to2 = new int[] {R.id.resultName};
-        searchAdapter = new SearchViewCursorAdapter(feedActivity,
+        searchAdapter = new SearchViewAdapter(feedActivity,
                 R.layout.search_layout,
                 null,
                 from2,

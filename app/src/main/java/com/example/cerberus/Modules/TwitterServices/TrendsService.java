@@ -1,6 +1,6 @@
 package com.example.cerberus.Modules.TwitterServices;
 
-import com.example.cerberus.Modules.TwitterServices.Responses.TrendResponse;
+import com.example.cerberus.Modules.Responses.TwitterResponses.TrendResponse;
 
 import java.util.List;
 

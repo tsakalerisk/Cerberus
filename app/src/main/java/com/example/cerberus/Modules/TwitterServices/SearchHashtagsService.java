@@ -1,6 +1,6 @@
 package com.example.cerberus.Modules.TwitterServices;
 
-import com.example.cerberus.Modules.TwitterServices.Responses.SearchResponse;
+import com.example.cerberus.Modules.Responses.TwitterResponses.SearchResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

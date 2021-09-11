@@ -1,37 +1,36 @@
-package com.example.cerberus;
+package com.example.cerberus.Fragments;
 
-import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.example.cerberus.Modules.Adapters.TweetAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.example.cerberus.Modules.Adapters.InstagramPostAdapter;
 import com.example.cerberus.Modules.CustomLinearLayoutManager;
+import com.example.cerberus.R;
+import com.example.cerberus.SearchPostsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class TwitterSearchFragment extends Fragment {
-    public RecyclerView recyclerView;
+public class InstagramSearchFragment extends Fragment {
     public String query;
+    public RecyclerView recyclerView;
     public ProgressBar progressBar;
     public SwipeRefreshLayout swipeLayout;
     private FloatingActionButton fab;
 
-    public TwitterSearchFragment(String query) {
+    public InstagramSearchFragment(String query) {
         this.query = query;
     }
 
-    public static TwitterSearchFragment newInstance(String query) {
-        return new TwitterSearchFragment(query);
+    public static InstagramSearchFragment newInstance(String query) {
+        return new InstagramSearchFragment(query);
     }
 
     @Override
@@ -41,7 +40,7 @@ public class TwitterSearchFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_twitter_search, container, false);
+        return inflater.inflate(R.layout.fragment_instagram_search, container, false);
     }
 
     @Override
@@ -52,13 +51,14 @@ public class TwitterSearchFragment extends Fragment {
         swipeLayout = view.findViewById(R.id.swipeLayout);
         fab = view.findViewById(R.id.fab);
 
-        TweetAdapter tweetAdapter = new TweetAdapter();
-        recyclerView.setAdapter(tweetAdapter);
-        tweetAdapter.getSearchResults(TwitterSearchFragment.this, query);
+        InstagramPostAdapter instagramPostAdapter = new InstagramPostAdapter(getActivity());
+        recyclerView.setAdapter(instagramPostAdapter);
+        instagramPostAdapter.getSearchResults(InstagramSearchFragment.this, query);
         SearchPostsActivity searchPostsActivity = (SearchPostsActivity) getActivity();
         recyclerView.setLayoutManager(new CustomLinearLayoutManager(searchPostsActivity));
 
-        swipeLayout.setOnRefreshListener(() -> tweetAdapter.getSearchResults(TwitterSearchFragment.this, query));
-        fab.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
+        swipeLayout.setOnRefreshListener(() -> instagramPostAdapter.getSearchResults(InstagramSearchFragment.this, query));
+        fab.setOnClickListener(v -> recyclerView.scrollToPosition(0));
+
     }
 }

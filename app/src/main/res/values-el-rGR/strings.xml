@@ -23,4 +23,5 @@
     <string name="posted_on_instagram">Δημοσιεύτηκε στο Instagram!</string>
     <string name="posted_on_twitter">Δημοσιεύτηκε στο Twitter!</string>
     <string name="facebook_no_support">Το Facebook δεν επιτρέπει αναζήτηση δημοσιεύσεων ακόμη.</string>
+    <string name="x_likes">Αρέσει σε %1$d</string>
 </resources>
