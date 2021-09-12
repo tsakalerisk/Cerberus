@@ -18,6 +18,9 @@ import com.example.cerberus.R;
 import com.example.cerberus.SearchPostsActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/*
+Fragment used for searching Instagram posts.
+ */
 public class InstagramSearchFragment extends Fragment {
     public String query;
     public RecyclerView recyclerView;
@@ -43,6 +46,9 @@ public class InstagramSearchFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_instagram_search, container, false);
     }
 
+    /*
+    Sets adapters and listeners for the fragment views.
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

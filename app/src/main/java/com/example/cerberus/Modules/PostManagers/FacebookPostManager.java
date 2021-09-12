@@ -17,6 +17,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+/*
+Manages posting on a Facebook page
+ */
 public class FacebookPostManager {
     private final FeedActivity feedActivity;
     private final AccessToken pageAccessToken;
@@ -32,6 +35,7 @@ public class FacebookPostManager {
 
     public void post() {
         if (feedActivity.loadedPhotoInfo != null) {
+            //Get a copy of the selected bitmap
             bitmap = feedActivity.loadedPhotoInfo.bitmap
                     .copy(feedActivity.loadedPhotoInfo.bitmap.getConfig(), true);
             postPhoto();

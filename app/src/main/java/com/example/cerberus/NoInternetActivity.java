@@ -8,6 +8,10 @@ import android.os.Bundle;
 
 import com.example.cerberus.Modules.NetworkCallback;
 
+/*
+Shows up when the device is not connected to the internet.
+Keeps each activity's intents as they were passed.
+ */
 public class NoInternetActivity extends AppCompatActivity {
     private ConnectivityManager connectivityManager;
     private ConnectivityManager.NetworkCallback networkCallback;

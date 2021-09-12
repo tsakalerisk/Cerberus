@@ -42,6 +42,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Query;
 
+/*
+Adapter used to display Instagram posts.
+Also contains methods to get the posts.
+ */
 public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdapter.ViewHolder>{
     private static final String TAG = "TAG";
     private final Activity activity;
@@ -55,11 +59,18 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
         this.activity = activity;
     }
 
+    /*
+    Gets Instagram posts based on a query. The query must be in English
+    and relatively popular, or an error will be returned. Due to Instagram's
+    API limitations we can not retrieve the username or the profile picture
+    of the users that made the posts, so they're replaced by placeholders instead.
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void getSearchResults(InstagramSearchFragment instagramSearchFragment, String query) {
         token = activity.getIntent().getParcelableExtra(LogInActivity.FB_USER_TOKEN_LITERAL);
         userId = activity.getIntent().getStringExtra(LogInActivity.INSTA_USER_ID);
 
+        //The process takes place sequentially on a separate thread so that there won't be any nested callbacks.
         new Thread(() -> {
             try {
                 String hashtagId = getHashtagId(query);
@@ -71,6 +82,7 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
                 activity.runOnUiThread(() -> {
                     notifyDataSetChanged();
                     instagramSearchFragment.progressBar.setVisibility(View.GONE);
+                    instagramSearchFragment.swipeLayout.setRefreshing(false);
                 });
             } catch (IOException e) {
                 e.printStackTrace();
@@ -78,7 +90,7 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
         }).start();
     }
 
-    private User getUser(Media medium) throws IOException {
+    /*private User getUser(Media medium) throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(medium.permalink)
                 .addConverterFactory(GsonConverterFactory.create()).build();
         Call<GetMediaInfoResponse> getMediaInfoCall = retrofit.create(MediaInfo.class).getMediaInfo(token.getToken());
@@ -111,33 +123,49 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
         else {
             return null;
         }
-    }
+    }*/
 
+
+    /*
+    Gets the top posts containing the specified hashtagId, deserializes the JSON
+    response into a list of Media objects using Gson, and returns the list.
+    Uses this endpoint: https://developers.facebook.com/docs/instagram-api/reference/ig-hashtag/top-media
+     */
     private List<Media> getTopMedia(String hashtagId) throws IOException {
         GraphRequest searchPostsRequest = GraphRequest.newGraphPathRequest(token, hashtagId + "/top_media", null);
+
         Bundle searchPostsParams = new Bundle();
         searchPostsParams.putString("user_id", userId);
         searchPostsParams.putString("fields", "caption, comments_count, id, like_count, media_type, media_url, permalink, timestamp");
         searchPostsRequest.setParameters(searchPostsParams);
-        GraphResponse unparsedResponse = searchPostsRequest.executeAndWait();
+
+        GraphResponse unparsedResponse = searchPostsRequest.executeAndWait(); //Runs on a separate thread
+
         if (unparsedResponse.getConnection().getResponseCode() == HttpURLConnection.HTTP_OK) {
-            Log.d(TAG, "Successfully got top media ids from instagram.");
+            Log.d(TAG, "Successfully got top media from instagram.");
             GetTopMediaResponse getTopMediaResponse = gson.fromJson(unparsedResponse.getRawResponse(), GetTopMediaResponse.class);
             return getTopMediaResponse.data;
         }
         else {
-            Log.d(TAG, "Failed to get top media ids from Instagram.");
+            Log.d(TAG, "Failed to get top media from Instagram.");
             return null;
         }
     }
 
+    /*
+    Gets the hashtag id related to the specified query.
+    Uses this endpoint: https://developers.facebook.com/docs/instagram-api/reference/ig-hashtag-search
+     */
     private String getHashtagId(String query) throws IOException {
         GraphRequest getHashtagIdRequest = GraphRequest.newGraphPathRequest(token, "/ig_hashtag_search/", null);
+
         Bundle getHashtagIdParams = new Bundle();
         getHashtagIdParams.putString("user_id", userId);
         getHashtagIdParams.putString("q", query);
         getHashtagIdRequest.setParameters(getHashtagIdParams);
-        GraphResponse unparsedResponse = getHashtagIdRequest.executeAndWait();
+
+        GraphResponse unparsedResponse = getHashtagIdRequest.executeAndWait(); //Runs on a separate thread
+
         if (unparsedResponse.getConnection().getResponseCode() == HttpURLConnection.HTTP_OK) {
             Log.d(TAG, "Successfully got hashtag id from Instagram.");
             GetHashtagIdResponse getHashtagIdResponse = gson.fromJson(unparsedResponse.getRawResponse(), GetHashtagIdResponse.class);
@@ -157,6 +185,10 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
         return new InstagramPostAdapter.ViewHolder(view);
     }
 
+    /*
+    Because Instagram doesn't allow getting information about the poster, such as username
+    and profile picture, I am using placeholders here.
+     */
     @Override
     public void onBindViewHolder(@NonNull InstagramPostAdapter.ViewHolder holder, int position) {
         //Picasso.with(activity).load(users.get(position).profile_pic_url).into(holder.userImageView);
@@ -178,6 +210,11 @@ public class InstagramPostAdapter extends RecyclerView.Adapter<InstagramPostAdap
         return media == null ? 0 : media.size();
     }
 
+    /*
+    As far as I know Instagram doesn't allow reactions on posts obtained
+    via hashtag search (the id we get from the search is different than
+    the id needed to comment), so the reaction buttons are currently unimplemented.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final ImageView userImageView;
         private final TextView usernameTextView;

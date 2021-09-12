@@ -24,6 +24,10 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+Manages logging in a Facebook user and getting and displaying
+info about their profile, page, and Instagram account in LogInActivity.
+ */
 public class FacebookLogInManager {
     private final LogInActivity logInActivity;
     private CallbackManager callbackManager = null;
@@ -47,6 +51,7 @@ public class FacebookLogInManager {
         setFacebookLogInCallback();
     }
 
+    //Set permissions and callback for the Facebook log in button
     private void setFacebookLogInCallback() {
         accessTokenTracker = createFacebookAccessTokenTracker();
         logInActivity.fbLoginButton.setPermissions(PERMISSIONS);
@@ -74,6 +79,8 @@ public class FacebookLogInManager {
     }
 
     public void requestFacebookInfo() {
+        //Request user info
+        // /me request, described here : https://developers.facebook.com/docs/graph-api/overview/
         GraphRequest userGraphRequest = GraphRequest.newMeRequest(userAccessToken,
                 (object, response) -> displayFacebookUserInfo(object));
         Bundle userParameters = new Bundle();
@@ -81,6 +88,8 @@ public class FacebookLogInManager {
         userGraphRequest.setParameters(userParameters);
         userGraphRequest.executeAsync();
 
+        //Request page info
+        //Uses this endpoint: https://developers.facebook.com/docs/graph-api/reference/user/accounts/
         GraphRequest pageGraphRequest = GraphRequest.newGraphPathRequest(userAccessToken,
                 "me/accounts", this::displayFacebookPageInfo);
         Bundle pageParameters = new Bundle();
@@ -99,6 +108,8 @@ public class FacebookLogInManager {
             logInActivity.fbPageName.setText(pageData.getString("name"));
             String imageUrl = pageData.getJSONObject("picture").getJSONObject("data").getString("url");
             Picasso.with(logInActivity).load(imageUrl).into(logInActivity.fbPageImage);
+
+            //If the Facebook page has an Instagram business account associated with it, request that info
             instaUserId = pageData.getJSONObject("instagram_business_account").getString("id");
             requestInstagramInfo(instaUserId);
         } catch (JSONException | NullPointerException e) {
@@ -106,6 +117,7 @@ public class FacebookLogInManager {
         }
     }
 
+    //Uses this endpoint: https://developers.facebook.com/docs/graph-api/reference/user/
     private void requestInstagramInfo(String id) {
         GraphRequest instaUserRequest = GraphRequest.newGraphPathRequest(userAccessToken, id, this::displayInstagramUserInfo);
         Bundle instaParameters = new Bundle();
@@ -140,6 +152,9 @@ public class FacebookLogInManager {
         }
     }
 
+    /*
+    The access token tracker tracks when the user logs out and updates the view accordingly.
+     */
     public AccessTokenTracker createFacebookAccessTokenTracker() {
         return new AccessTokenTracker() {
             @Override
@@ -163,9 +178,11 @@ public class FacebookLogInManager {
 
     private void checkIfLoggedIn() {
         if (AUTO_LOG_OUT) {
+            //If AUTO_LOG_OUT is set the user is automatically logged out when the app starts, for display purposes
             LoginManager.getInstance().logOut();
         }
         else {
+            //If the user is already logged in, request their info directly
             userAccessToken = AccessToken.getCurrentAccessToken();
             if (userAccessToken != null) {
                 requestFacebookInfo();

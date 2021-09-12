@@ -27,6 +27,9 @@ import java.util.Locale;
 
 import retrofit2.Call;
 
+/*
+Manages the SearchView in FeedActivity
+ */
 public class SearchManager {
     public static final int AREA_CODE_GREECE = 23424833;
     public static final int AREA_CODE_WORLD = 1;
@@ -57,6 +60,7 @@ public class SearchManager {
         searchAutoCompleteTextView.setThreshold(0);
 
         //Set trend adapter
+        //Map "from" columns from the cursor given to "to" TextViews.
         final String[] from = new String[] {TREND_NAME_LITERAL, TWEET_NUM_LITERAL};
         final int[] to = new int[] {R.id.trendName, R.id.tweetNum};
         trendAdapter = new SearchViewAdapter(feedActivity,
@@ -105,6 +109,7 @@ public class SearchManager {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                //Start SearchPostsActivity with the selected query
                 Intent intent = new Intent(feedActivity, SearchPostsActivity.class);
                 intent.putExtra(QUERY_LITERAL, s);
                 intent.putExtras(feedActivity.getIntent().getExtras());
@@ -114,6 +119,7 @@ public class SearchManager {
 
             @Override
             public boolean onQueryTextChange(String s) {
+                //Switch between trend adapter and search result adapter depending if there is text or not
                 if (s.isEmpty()) {
                     searchView.setSuggestionsAdapter(trendAdapter);
                     getTrends();
@@ -127,6 +133,7 @@ public class SearchManager {
         });
     }
 
+    //Search topics/hashtags beginning with the specified query
     private static void searchHashtags(String query) {
         Call<SearchResponse> call = getTwitterClient().getSearchHashtagsService().searchHashtags(query);
         call.enqueue(new Callback<SearchResponse>() {
@@ -148,6 +155,8 @@ public class SearchManager {
         });
     }
 
+    //Get trends based on an area code
+    //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/trends/trends-for-location/api-reference/get-trends-place
     private static void getTrends() {
         Call<List<TrendResponse>> call = getTwitterClient().getTrendsService().getTrends(AREA_CODE_GREECE);
         call.enqueue(new Callback<List<TrendResponse>>() {

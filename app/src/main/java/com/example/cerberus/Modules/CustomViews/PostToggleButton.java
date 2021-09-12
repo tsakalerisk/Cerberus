@@ -13,6 +13,10 @@ import androidx.core.content.ContextCompat;
 
 import com.example.cerberus.R;
 
+/*
+This class customises ToggleButtons and is used in FeedActivity
+to select where to publish each post.
+ */
 public class PostToggleButton extends AppCompatToggleButton {
     private final int postToggleColor;
 

@@ -18,6 +18,9 @@ import com.example.cerberus.Modules.NetworkCallback;
 import com.facebook.login.widget.LoginButton;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+/*
+Manages user log in
+ */
 public class LogInActivity extends AppCompatActivity {
 
     public static final boolean AUTO_LOG_OUT = false;
@@ -59,11 +62,14 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         findAllViews();
+
         facebookLogInManager = new FacebookLogInManager(this);
         twitterLogInManager.init();
+
         if (AUTO_CONTINUE && facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
             continueToFeed();
         }
+
         buttonNext.setOnClickListener(v -> {
             if (facebookLogInManager.isLoggedIn() && twitterLogInManager.isLoggedIn()) {
                 continueToFeed();
@@ -75,6 +81,7 @@ public class LogInActivity extends AppCompatActivity {
                         .create().show();
             }
         });
+
         checkForNetwork();
     }
 

@@ -14,6 +14,9 @@ import com.example.cerberus.FeedActivity;
 import com.example.cerberus.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+/*
+Manages the timeline's slide animation in FeedActivity
+ */
 public class TimelineAnimationManager {
     private static boolean isAtTop = true;
     private static boolean movedThisScroll = false;

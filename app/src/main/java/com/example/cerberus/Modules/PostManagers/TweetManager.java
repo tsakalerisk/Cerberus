@@ -21,6 +21,9 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 
+/*
+Manages posting on Twitter
+ */
 public class TweetManager {
     private static final String TAG = "TAG";
     public static final int QUALITY = 100;
@@ -47,7 +50,8 @@ public class TweetManager {
         }
     }
 
-    //Computationally heavy
+    //Uploads image to Twitter, when this is done it calls tweetStatus() to add a caption and make the tweet
+    //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/media/upload-media/api-reference/post-media-upload
     private void tweetWithImage() {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, QUALITY, stream);
@@ -110,6 +114,8 @@ public class TweetManager {
         }*/
     }
 
+    //Makes a tweet, with an image if provided with a mediaIdString
+    //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-update
     private void tweetStatus(String mediaIdString) {
         Call<Tweet> call = twitterClient.getStatusesService().update(status,null,
                 null, null, null, null, null,

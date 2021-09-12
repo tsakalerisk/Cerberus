@@ -32,6 +32,9 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+/*
+Displays search posts from Twitter and Instagram in tabs
+ */
 public class SearchPostsActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private TabLayout tabLayout;
@@ -59,7 +62,6 @@ public class SearchPostsActivity extends AppCompatActivity {
         setUpTabs();
 
         checkForNetwork();
-
     }
 
     private class SearchPagerAdapter extends FragmentPagerAdapter {

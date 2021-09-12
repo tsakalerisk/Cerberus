@@ -24,16 +24,25 @@ import java.util.List;
 
 import retrofit2.Call;
 
+/*
+Adapter used to display Tweets.
+Also contains methods to get them.
+ */
 public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
     public static final int MAX_SEARCH_TWEETS = 100;
     public static final int MAX_TIMELINE_TWEETS = 200;
     private List<Tweet> postList;
     private static final String TAG = "TAG";
 
+    /*
+    Gets tweets based on a specified query.
+    Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/api-reference/get-search-tweets
+     */
     public void getSearchResults(TwitterSearchFragment twitterSearchFragment, String q) {
-        TwitterCore.getInstance().getApiClient().getSearchService().tweets(q, null,
-                null, null, null, MAX_SEARCH_TWEETS, null, null, null,
-                null).enqueue(new Callback<Search>() {
+        Call<Search> getSearchResults = TwitterCore.getInstance().getApiClient().getSearchService()
+                .tweets(q, null, null, null, null, MAX_SEARCH_TWEETS,
+                        null, null, null, null);
+        getSearchResults.enqueue(new Callback<Search>() {
             @Override
             public void success(Result<Search> result) {
                 setData(result.data.tweets);
@@ -50,12 +59,15 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         });
     }
 
+    /*
+    Gets tweets from the home timeline of a logged in user.
+    Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/timelines/api-reference/get-statuses-home_timeline
+     */
     public void getTimeline(FeedActivity feedActivity) {
         Call<List<Tweet>> getTimeline = TwitterCore.getInstance().getApiClient().getStatusesService()
                 .homeTimeline(MAX_TIMELINE_TWEETS, null, null, null,
                         null, null, null);
         getTimeline.enqueue(new Callback<List<Tweet>>() {
-            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void success(Result<List<Tweet>> result) {
                 setData(result.data);

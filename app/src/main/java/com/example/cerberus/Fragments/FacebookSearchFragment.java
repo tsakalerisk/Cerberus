@@ -10,6 +10,11 @@ import android.view.ViewGroup;
 
 import com.example.cerberus.R;
 
+/*
+Fragment used for searching Facebook posts.
+Because Facebook does not currently support search, this fragment is empty.
+ */
+
 public class FacebookSearchFragment extends Fragment {
 
     public FacebookSearchFragment() {}

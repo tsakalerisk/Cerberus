@@ -12,6 +12,9 @@ import com.example.cerberus.NoInternetActivity;
 
 import java.io.Serializable;
 
+/*
+Manages changes in network connectivity and navigates to and from NoInternetActivity
+ */
 public class NetworkCallback extends ConnectivityManager.NetworkCallback {
     public static final String ACTIVITY_FROM = "ACTIVITY_FROM";
     private final Activity activityFrom;

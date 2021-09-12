@@ -39,6 +39,14 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 
+/*
+Manages posting on Instagram. Because Instagram requires a URL on a public server for the
+image, posting is done in four stages:
+1) Upload image to Imgur
+2) Create a "media container" using the Imgur url
+3) Publish post on Instagram
+4) Delete from Imgur
+ */
 public class InstagramPostManager {
     private final FeedActivity feedActivity;
     private Bitmap bitmap;
@@ -61,7 +69,7 @@ public class InstagramPostManager {
 
         new Thread(() -> {
             final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                    .writeTimeout(90, TimeUnit.SECONDS)
+                    .writeTimeout(90, TimeUnit.SECONDS) //Increased timeout, in case of concurrent uploads
                     .build();
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -70,6 +78,7 @@ public class InstagramPostManager {
                     .client(okHttpClient)
                     .build();
             imgurApi = retrofit.create(ImgurApi.class);
+
             try {
                 ImgurResponse imgurResponse = postToImgur();
                 if (imgurResponse != null) {
@@ -91,6 +100,7 @@ public class InstagramPostManager {
         }).start();
     }
 
+    //Because Instagram requires square-ish images, I convert them by adding black bars on the sides
     private Bitmap createSquaredBitmap(Bitmap srcBmp) {
         int dim = Math.max(srcBmp.getWidth(), srcBmp.getHeight());
         Bitmap dstBmp = Bitmap.createBitmap(dim, dim, Bitmap.Config.ARGB_8888);
@@ -105,6 +115,8 @@ public class InstagramPostManager {
         return dstBmp;
     }
 
+    //Deletes image from Imgur using its delete hash
+    //Uses this endpoint: https://apidocs.imgur.com/#949d6cb0-5e55-45f7-8853-8c44a108399c
     private void deleteFromImgur(String deleteHash) throws IOException {
         Response<ResponseBody> response = imgurApi.deleteImage(deleteHash).execute();
         if (response.isSuccessful())
@@ -113,6 +125,8 @@ public class InstagramPostManager {
             Log.d(TAG, "Failed to delete from Imgur.");
     }
 
+    //Publish post to Instagram using media container id
+    //Uses this endpoint: https://developers.facebook.com/docs/instagram-api/reference/ig-user/media_publish#creating
     private boolean publishPost(String id) throws JSONException, IOException {
         JSONObject body = new JSONObject();
         body.put("creation_id", id);
@@ -132,6 +146,8 @@ public class InstagramPostManager {
         }
     }
 
+    //Create Instagram media container using Imgur url, and return container id
+    //Uses this endpoint: https://developers.facebook.com/docs/instagram-api/reference/ig-user/media#creating
     private String createMedia(ImgurResponse imgurResponse) throws JSONException, IOException {
         JSONObject body = new JSONObject();
         body.put("caption", text);
@@ -152,6 +168,8 @@ public class InstagramPostManager {
         }
     }
 
+    //Posts image to Imgur
+    //Uses this endpoint: https://apidocs.imgur.com/#c85c9dfc-7487-4de2-9ecd-66f727cf3139
     private ImgurResponse postToImgur() throws IOException {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
@@ -183,6 +201,7 @@ public class InstagramPostManager {
         Call<ResponseBody> deleteImage(@Path("deletehash") String deleteHash);
     }
 
+    //Model class that receives the deserialized response from Imgur upload
     public static class ImgurResponse {
         public Data data;
         public static class Data {

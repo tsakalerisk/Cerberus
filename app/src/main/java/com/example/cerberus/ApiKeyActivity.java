@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+/*
+Unused activity
+ */
 public class ApiKeyActivity extends AppCompatActivity {
 
     @Override

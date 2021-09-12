@@ -33,10 +33,15 @@ import com.twitter.sdk.android.tweetui.TweetView;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 
-
+/*
+This class customises the TweetView provided by TwitterKit
+adding things like round user icons, retweet and favorite
+counters, and reaction buttons.
+ */
 public class CustomTweetView extends TweetView {
     private ImageFilterView avatarView;
     private static final String TAG = "TAG";
+    private TextView textReplies;
     private TextView textRetweets;
     private TextView textFavorites;
     private ImageButton replyButton;
@@ -67,6 +72,7 @@ public class CustomTweetView extends TweetView {
     public CustomTweetView(Context context, Tweet tweet, int styleResId) {
         super(context, tweet, styleResId);
 
+        //Replaces the square user picture with a round one
         ImageView oldAvatarView = findViewById(R.id.tw__tweet_author_avatar);
         ViewGroup parent = (ViewGroup) oldAvatarView.getParent();
         int avatarIndex = parent.indexOfChild(oldAvatarView);
@@ -80,6 +86,7 @@ public class CustomTweetView extends TweetView {
         parent.removeView(oldAvatarView);
         parent.addView(avatarView, avatarIndex);
 
+        //Replaces the old basic action bar with the new detailed one
         ViewGroup oldActionBar = findViewById(R.id.tw__tweet_action_bar);
         View actionBar = LayoutInflater.from(context)
                 .inflate(R.layout.twitter_action_bar_layout, null, false);
@@ -89,7 +96,7 @@ public class CustomTweetView extends TweetView {
         parent.removeView(oldActionBar);
         parent.addView(actionBar);
 
-        //TextView textReplies = actionBar.findViewById(R.id.text_replies);
+        textReplies = actionBar.findViewById(R.id.text_replies);
         textRetweets = findViewById(R.id.text_retweets);
         textFavorites = findViewById(R.id.text_favorites);
 
@@ -102,6 +109,7 @@ public class CustomTweetView extends TweetView {
     public void setTweet(Tweet tweet) {
         super.setTweet(tweet);
         if (DISABLE_APP_PERMALINK) {
+            //Disables posts from opening in the app on-click
             setOnClickListener(null);
         }
         String url;
@@ -117,15 +125,16 @@ public class CustomTweetView extends TweetView {
             setUpRetweetButton(getContext());
             setUpFavoriteButton(getContext());
             setUpReplyButton();
-
-            //tHiS ObJeCt iS OnLy aVaIlAbLe wItH ThE PrEmIuM AnD EnTeRpRiSe tIeR PrOdUcTs.
-            /*textReplies.setText(displayTweet.replyCount != 0 ?
-                    String.valueOf(displayTweet.replyCount) : "");*/
         }
     }
 
     private void setUpReplyButton() {
+        //tHiS ObJeCt iS OnLy aVaIlAbLe wItH ThE PrEmIuM AnD EnTeRpRiSe tIeR PrOdUcTs.
+        /*textReplies.setText(displayTweet.replyCount != 0 ?
+                String.valueOf(displayTweet.replyCount) : "");*/
+
         replyButton.setOnClickListener(v -> {
+            //Sets up the reply UI and locks scrolling while the user types a reply
             replyLayout = getRootView().findViewById(R.id.replyLayout);
             replyEditText = getRootView().findViewById(R.id.replyEditText);
             replySendButton = getRootView().findViewById(R.id.replySendButton);
@@ -141,14 +150,16 @@ public class CustomTweetView extends TweetView {
                 recyclerViewLayoutManager.setScrollEnabled(false);
             }
             if (replyEditText.requestFocus()) {
-                //Open keyboard
+                //Opens keyboard
                 InputMethodManager inputMethodManager = (InputMethodManager) getContext()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.toggleSoftInputFromWindow(getApplicationWindowToken(),
                         InputMethodManager.SHOW_IMPLICIT, 0);
             }
 
-            replySendButton.setOnClickListener(new replyButtonListener());
+            replySendButton.setOnClickListener(new ReplyButtonListener());
+
+            //If the user closes the keyboard the reply UI is hidden and scrolling is unlocked
             KeyboardVisibilityEvent.setEventListener((Activity) getContext(), isOpen -> {
                 if (!isOpen) {
                     if (replyEditText != null) {
@@ -166,9 +177,14 @@ public class CustomTweetView extends TweetView {
         });
     }
 
-    private class replyButtonListener implements OnClickListener {
+    /*
+    Posts a reply to the tweet displayed.
+    Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-update
+     */
+    private class ReplyButtonListener implements OnClickListener {
         @Override
         public void onClick(View v) {
+            //The reply text needs to be preceded by the original poster's @username.
             TwitterCore.getInstance().getApiClient().getStatusesService()
                     .update("@" + displayTweet.user.screenName + " "
                                     + replyEditText.getText().toString(), displayTweet.id,
@@ -194,8 +210,11 @@ public class CustomTweetView extends TweetView {
     private void setUpRetweetButton(Context context) {
         retweetButton.setTag(RETWEETED, displayTweet.retweeted);
         updateRetweetViews(context, displayTweet.retweeted);
+
         retweetButton.setOnClickListener(v -> {
             if (!(boolean) retweetButton.getTag(RETWEETED)) {
+                //Retweet displayed tweet
+                //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-retweet-id
                 TwitterCore.getInstance().getApiClient().getStatusesService()
                         .retweet(displayTweet.id, null).enqueue(new Callback<Tweet>() {
                     @Override
@@ -211,6 +230,8 @@ public class CustomTweetView extends TweetView {
                     }
                 });
             } else {
+                //Un-retweet displayed tweet
+                //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-statuses-unretweet-id
                 TwitterCore.getInstance().getApiClient().getStatusesService()
                         .unretweet(displayTweet.id, null).enqueue(new Callback<Tweet>() {
                     @Override
@@ -232,8 +253,11 @@ public class CustomTweetView extends TweetView {
     private void setUpFavoriteButton(Context context) {
         favoriteButton.setTag(FAVORITED, displayTweet.favorited);
         updateFavoriteViews(context, displayTweet.favorited);
+
         favoriteButton.setOnClickListener(v -> {
             if (!(boolean) favoriteButton.getTag(FAVORITED)) {
+                //Favorite displayed tweet
+                //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-favorites-create
                 TwitterCore.getInstance().getApiClient().getFavoriteService()
                         .create(displayTweet.id, null).enqueue(new Callback<Tweet>() {
                     @Override
@@ -249,6 +273,8 @@ public class CustomTweetView extends TweetView {
                     }
                 });
             } else {
+                //Un-favorite displayed tweet
+                //Uses this endpoint: https://developer.twitter.com/en/docs/twitter-api/v1/tweets/post-and-engage/api-reference/post-favorites-destroy
                 TwitterCore.getInstance().getApiClient().getFavoriteService()
                         .destroy(displayTweet.id, null).enqueue(new Callback<Tweet>() {
                     @Override
@@ -305,18 +331,20 @@ public class CustomTweetView extends TweetView {
                 String.valueOf(retweetCount) : "");
     }
 
+    /*
+    If the current tweet is a retweet then displayTweet will be
+    the tweet being retweeted. Otherwise, they will be the same.
+     */
     private Tweet getDisplayTweet() {
         if (getTweet().retweetedStatus != null)
             return getTweet().retweetedStatus;
-        else if (getTweet().quotedStatus != null)
-            return getTweet().quotedStatus;
         else
             return getTweet();
     }
 
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View view = ((Activity)getContext()).getCurrentFocus();
+        View view = ((Activity) getContext()).getCurrentFocus();
         if (view == null) {
             view = new View(getContext());
         }

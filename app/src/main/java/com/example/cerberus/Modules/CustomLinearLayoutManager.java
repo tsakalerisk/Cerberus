@@ -4,6 +4,9 @@ import android.content.Context;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+/*
+LinearLayoutManager with the ability to pause scrolling (to type a reply)
+ */
 public class CustomLinearLayoutManager extends LinearLayoutManager {
     private boolean isScrollEnabled = true;
 

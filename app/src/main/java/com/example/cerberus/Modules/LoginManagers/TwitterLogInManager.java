@@ -29,6 +29,9 @@ import com.twitter.sdk.android.core.models.User;
 
 import retrofit2.Call;
 
+/*
+Manages logging in a Twitter user and getting and displaying info about their profile.
+ */
 public class TwitterLogInManager {
     private final LogInActivity logInActivity;
 
@@ -51,9 +54,11 @@ public class TwitterLogInManager {
     private void checkLogIn() {
         if (isLoggedIn()) {
             if (AUTO_LOG_OUT) {
+                //If AUTO_LOG_OUT is set the user is automatically logged out when the app starts, for display purposes
                 logOut();
                 setLogOutVisibility(false);
             } else {
+                //If the user is already logged in, request their info directly
                 setLogOutVisibility(true);
                 requestUserInfo();
             }
@@ -62,6 +67,7 @@ public class TwitterLogInManager {
     }
 
     private void setUpButtons() {
+        //Set callback for log in button
         logInActivity.twLogInButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -76,6 +82,7 @@ public class TwitterLogInManager {
                 exception.printStackTrace();
             }
         });
+        //Set listener for log out button
         logInActivity.twLogOutButton.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(logInActivity);
             builder.setMessage(logInActivity.getResources().getString(R.string.logged_in_as) + logInActivity.twName.getText())
@@ -131,6 +138,7 @@ public class TwitterLogInManager {
         });
     }
 
+    //Show or hide the log out button depending on log in status
     private void setLogOutVisibility(boolean b) {
         if (b)
             logInActivity.twLogOutButton.setVisibility(View.VISIBLE);

@@ -20,6 +20,9 @@ import androidx.core.content.ContextCompat;
 
 import com.example.cerberus.FeedActivity;
 
+/*
+Manages loading a photo from the device
+ */
 public class PhotoLoader {
     private final FeedActivity feedActivity;
     public static final String TAG = "TAG";
@@ -47,6 +50,7 @@ public class PhotoLoader {
                 });
     }
 
+    //Check if permission is granted, otherwise ask for it
     public void init() {
         if (ContextCompat.checkSelfPermission(feedActivity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {

@@ -82,10 +82,12 @@ public class FeedActivity extends AppCompatActivity {
         SearchManager.setUpSearchView(FeedActivity.this);
         setUpButtonListeners();
 
+        //Create post listeners
         facebookPostManager = new FacebookPostManager(FeedActivity.this);
         tweetManager = new TweetManager(FeedActivity.this);
         instagramPostManager = new InstagramPostManager(FeedActivity.this);
 
+        //Init timeline adapter
         TweetAdapter tweetAdapter = new TweetAdapter();
         timelineRecyclerView.setAdapter(tweetAdapter);
         tweetAdapter.getTimeline(FeedActivity.this);
@@ -184,6 +186,7 @@ public class FeedActivity extends AppCompatActivity {
                 .show();
     }
 
+    //Change views if a photo is unloaded
     private void deletePhoto() {
         if (loadedPhotoInfo != null) {
             photoImageView.setImageBitmap(null);
@@ -203,6 +206,7 @@ public class FeedActivity extends AppCompatActivity {
             postButton.setEnabled(false);
     }
 
+    //Change views if a photo is loaded
     public void onPhotoReturned(PhotoInfo photoInfo) {
         photoButtonLayout.setVisibility(View.VISIBLE);
         addPhotoButton.setVisibility(View.INVISIBLE);
